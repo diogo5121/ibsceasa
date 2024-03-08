@@ -12,6 +12,7 @@
 # next.js
 /.next/
 /out/
+/src/components/api.tsx
 
 # production
 /build
