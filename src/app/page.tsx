@@ -7,8 +7,10 @@ export default function Home() {
 
   return (
     <ProtectedRouts>
+      <head>
+        <title>Supermercado IBS</title>
+      </head>
       <Container>
-
         <NavBar />
         <Grid container>
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }}>
