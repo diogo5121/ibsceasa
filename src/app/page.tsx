@@ -4,8 +4,6 @@ import ProtectedRouts from "@/components/ProtectedRoutes";
 import { Button, Container, Grid } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-
-
 export default function Home() {
   const router = useRouter()
   return (
