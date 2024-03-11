@@ -14,7 +14,7 @@ export default function Home() {
       <Container>
         <NavBar />
         <Grid container>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/faturamento-atual')}>
+          <Button variant="contained"le={ sty{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/faturamento-atual')}>
             Faturamento Atual
           </Button>
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedido-ceasa')}>
