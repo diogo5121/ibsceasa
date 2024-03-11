@@ -1,7 +1,5 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
 
-dotenv.config();
 
 interface LoginResponse {
     access_token: string;
@@ -13,9 +11,8 @@ export async function fazerLogin(
     setLoading: (loading: boolean) => void,
     seterro: (erro: string) => void
 ): Promise<string | null> {
-    const ipApi = process.env.NODE_ENV
 
-    
+
     try {
         const response = await axios.post<LoginResponse>('http://45.164.8.122:30492/api/ciss/login', {
             usuario: usuario,
@@ -44,5 +41,26 @@ export async function fazerLogin(
         console.error('Erro ao fazer login:', error);
         seterro('Usuario ou senha invalido')
         return null;
+    }
+}
+
+interface Faturamento {
+    somaValores: string;
+}
+
+export async function ObterFaturamento(data: string, loja: string): Promise<Faturamento> {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await axios.post<Faturamento>('http://45.164.8.122:30492/api/ciss/faturamento', {
+            token: token,
+            data: data,
+            empresa: loja,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao obter faturamento:', error);
+        throw error;
     }
 }
