@@ -45,7 +45,7 @@ export default function Home() {
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/compra-ceasa')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                COMPRA - CEASA
+                DEL - CEASA
               </Typography>
               <BorderColorIcon />
             </Box>
@@ -82,7 +82,7 @@ export default function Home() {
               <PriceChange />
             </Box>
           </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/precos')}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/promocoes')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                 PROMOÇÕES DE HOJE

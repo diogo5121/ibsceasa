@@ -109,7 +109,7 @@ export default function Faturamento() {
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Matriz</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja1}</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700, color:'white' }}>{loja1}</Typography>
                                 </Box>
                             </Box>
                             <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -121,7 +121,8 @@ export default function Faturamento() {
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Catamarã</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja2}</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700, color:'white' }}>{loja2}</Typography>
+
                                 </Box>
                             </Box>
                             <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -133,7 +134,8 @@ export default function Faturamento() {
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Cabo</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja3}</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700, color:'white' }}>{loja3}</Typography>
+
                                 </Box>
                             </Box>
                             <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -145,7 +147,8 @@ export default function Faturamento() {
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Vila Social</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja4}</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700, color:'white' }}>{loja4}</Typography>
+
                                 </Box>
                             </Box>
                             <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -157,7 +160,7 @@ export default function Faturamento() {
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Mega</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja5}</a>
+                                <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700, color:'white' }}>{loja5}</Typography>
                                 </Box>
                             </Box>
                             <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -168,7 +171,8 @@ export default function Faturamento() {
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Total:</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{total}</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700, color:'white' }}>{total}</Typography>
+
                                 </Box>
                             </Box>
                         </Grid>
