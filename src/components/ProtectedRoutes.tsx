@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ProtectedRoutes({ children }: Readonly<{ children: React.ReactNode; }>) {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
 
   useEffect(() => {
     const lastLoginString = localStorage?.getItem('lastLogin');
@@ -22,8 +24,9 @@ export default function ProtectedRoutes({ children }: Readonly<{ children: React
       window.location.reload();
     }
 
-    console.log(localStorage?.getItem('lastLogin'));
+    setIsAuthenticated(true);
+
   }, []);
 
-  return <>{children}</>;
+  return isAuthenticated ? <>{children}</> : null;
 }

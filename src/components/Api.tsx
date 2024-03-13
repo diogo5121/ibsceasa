@@ -21,16 +21,11 @@ export async function fazerLogin(
         });
         if (response.data.access_token) {
             localStorage.setItem('token', response.data.access_token)
-
+            console.log(response)
             const currentTime = dayjs().toString();
-
-
-
             localStorage.setItem('lastLogin', currentTime);
-
-
-
-            window.location.reload()
+            localStorage.setItem('nome', usuario);
+            window.location.reload();
             return response.data.access_token;
         } else {
             setLoading(false)

@@ -3,13 +3,14 @@ import { use, useEffect, useState } from 'react';
 import { ObterFaturamento } from "@/components/Api";
 import Head from 'next/head';
 import ProtectedRouts from "@/components/ProtectedRoutes";
-import { Box, Button, CircularProgress, Container, Grid, Stack } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Grid, Stack, Typography } from "@mui/material";
 import { AutoGraphSharp, GraphicEqOutlined, MoneySharp, StoreSharp } from '@mui/icons-material';
 import { formatarValorMonetario } from '@/utils/ReformularValor';
 import NavBarPages from '@/components/NavBarPages';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { Dayjs } from 'dayjs';
+import "../app/globals.css";
 
 
 interface Faturamento {
@@ -36,10 +37,8 @@ export default function Faturamento() {
         const fetchData = async () => {
             try {
                 setValorProgresso(0)
-
                 const formattedDate = selectedDate;
-
-
+                setValorProgresso(10)
                 const response: Faturamento = await ObterFaturamento(formattedDate, '1');
                 const somaValoresString = response.somaValores;
                 setLoja1(formatarValorMonetario(somaValoresString))
@@ -59,11 +58,9 @@ export default function Faturamento() {
                 const response5: Faturamento = await ObterFaturamento(formattedDate, '7');
                 const somaValoresString5 = response5.somaValores;
                 setLoja5(formatarValorMonetario(somaValoresString5))
-
                 const valorTotal = parseFloat(somaValoresString) + parseFloat(somaValoresString2) + parseFloat(somaValoresString3) + parseFloat(somaValoresString4) + parseFloat(somaValoresString5)
                 const ValorString = valorTotal.toString()
                 setTotal(formatarValorMonetario(ValorString))
-
                 setValorProgresso(100)
 
             } catch (error) {
@@ -72,19 +69,24 @@ export default function Faturamento() {
         };
         fetchData();
     }, [selectedDate]);
-    
+
 
     return (
         <ProtectedRouts>
             <Head>
                 <title>Supermercado IBS</title>
             </Head>
-            <Container>
+            <Box>
                 <NavBarPages />
+                <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                    <Typography variant="h5" component="h1" m={1} fontWeight={700}>
+                        FATURAMENTO DAS LOJAS:
+                    </Typography>
+                </Box>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Box m={5} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
+                    <Box m={3} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
                         <DatePicker
-                            label='Data'
+                            label='Escolha uma data'
                             onChange={(date: string | number | Date | null | undefined | Dayjs) => {
                                 setSelectedDate(dayjs(date).format('YYYY-MM-DD'));
                             }}
@@ -94,73 +96,76 @@ export default function Faturamento() {
                 </LocalizationProvider>
                 {valorProgresso === 100 ? (
                     <>
-                        <Grid container>
-                            <Box style={{ width: 135, height: 135, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                        <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+
+
+
+                            <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                 <Box style={{ margin: 10, padding: 5, backgroundColor: 'gray' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <StoreSharp />
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Loja 1</a>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Matriz</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Loja 1</Typography>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Matriz</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja1}</a>
                                 </Box>
                             </Box>
-                            <Box style={{ width: 135, height: 135, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                            <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                 <Box style={{ margin: 10, padding: 5, backgroundColor: 'gray' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <StoreSharp />
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Loja 2</a>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Catamarã</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Loja 2</Typography>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Catamarã</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja2}</a>
                                 </Box>
                             </Box>
-                            <Box style={{ width: 135, height: 135, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                            <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                 <Box style={{ margin: 10, padding: 5, backgroundColor: 'gray' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <StoreSharp />
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Loja 3</a>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Cabo</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Loja 3</Typography>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Cabo</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja3}</a>
                                 </Box>
                             </Box>
-                            <Box style={{ width: 135, height: 135, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                            <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                 <Box style={{ margin: 10, padding: 5, backgroundColor: 'gray' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <StoreSharp />
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Loja 5</a>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Vila Social</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Loja 5</Typography>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Vila Social</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja4}</a>
                                 </Box>
                             </Box>
-                            <Box style={{ width: 135, height: 135, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                            <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                 <Box style={{ margin: 10, padding: 5, backgroundColor: 'gray' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <StoreSharp />
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Loja 7</a>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>Mega</a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Loja 7</Typography>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>Mega</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{loja5}</a>
                                 </Box>
                             </Box>
-                            <Box style={{ width: 135, height: 135, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                                <Box style={{ margin: 10, padding: 5, backgroundColor: 'blue' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                            <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                <Box style={{ margin: 10, padding: 5, backgroundColor: 'orange' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <MoneySharp />
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                    <a style={{ fontSize: 20, fontWeight: 700 }}>TOTAL: </a>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 20, fontWeight: 700 }}>Total:</Typography>
                                 </Box>
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'green' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <a style={{ fontSize: 20, fontWeight: 700, color: 'white' }}>{total}</a>
@@ -175,7 +180,7 @@ export default function Faturamento() {
                     </Box>
 
                 )}
-            </Container>
+            </Box>
         </ProtectedRouts>
     );
 }
