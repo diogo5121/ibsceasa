@@ -1,4 +1,5 @@
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 
 interface LoginResponse {
@@ -21,11 +22,11 @@ export async function fazerLogin(
         if (response.data.access_token) {
             localStorage.setItem('token', response.data.access_token)
 
-            const currentTime = new Date().toISOString();
+            const currentTime = dayjs().toString();
 
 
 
-            localStorage.setItem('lastLoginTime', currentTime);
+            localStorage.setItem('lastLogin', currentTime);
 
 
 

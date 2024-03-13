@@ -9,10 +9,14 @@ import { formatarValorMonetario } from '@/utils/ReformularValor';
 import NavBarPages from '@/components/NavBarPages';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+
 
 interface Faturamento {
     somaValores: string
+}
+interface Data {
+    date?: Date
 }
 
 export default function Faturamento() {
@@ -25,6 +29,7 @@ export default function Faturamento() {
 
     const [valorProgresso, setValorProgresso] = useState(0);
     const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
+    const [dataFormulada, setDataFormulada] = useState<Dayjs>(dayjs());
 
 
     useEffect(() => {
@@ -67,6 +72,7 @@ export default function Faturamento() {
         };
         fetchData();
     }, [selectedDate]);
+    
 
     return (
         <ProtectedRouts>
@@ -77,8 +83,12 @@ export default function Faturamento() {
                 <NavBarPages />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Box m={5} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
-                        <DatePicker label='Data'
-                            onChange={(date) => setSelectedDate(dayjs(date).format('YYYY-MM-DD'))}
+                        <DatePicker
+                            label='Data'
+                            onChange={(date: string | number | Date | null | undefined | Dayjs) => {
+                                setSelectedDate(dayjs(date).format('YYYY-MM-DD'));
+                            }}
+                            defaultValue={dayjs()}
                         />
                     </Box>
                 </LocalizationProvider>
