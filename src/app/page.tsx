@@ -26,7 +26,7 @@ export default function Home() {
           </Typography>
         </Box>
         <Grid container style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedido-ceasa')}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                 Realizar Pedido Ceasa
