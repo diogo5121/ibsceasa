@@ -1,24 +1,90 @@
-'use client'
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import ProtectedRouts from "@/components/ProtectedRoutes";
-import { Box, Button, CircularProgress, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, IconButton, TextField, Typography } from "@mui/material";
 import NavBarPages from '@/components/NavBarPages';
-import "@/app/globals.css"
-import { ArrowRight } from '@mui/icons-material';
-import { BiPlus, BiSave } from 'react-icons/bi';
+import { BiPlus } from 'react-icons/bi';
 import { RiSubtractFill } from "react-icons/ri";
-
+import { ConsultarProduto, ConsultarTabelaCeasa, JogarPedido, Root3 } from '@/components/Api';
+import { formatarValorMonetario } from '@/utils/ReformularValor';
+import '@/app/globals.css'
+import { useRouter } from 'next/navigation';
+import dayjs from 'dayjs';
 
 export default function Loja1() {
+    const [loading, setLoading] = useState(true);
+    const [produtosceasaTotal, setProdutosCeasaTotal] = useState<Root3>();
+    const [botaoloading, setBotaoloading] = useState(false);
+    const [custosProdutos, setCustosProdutos] = useState<{ titulo: string; custo: string; quantidade: number, status: string }[]>([]);
+    const route = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {
+            const produtosceasa = await ConsultarTabelaCeasa('produtosceasa');
+            setProdutosCeasaTotal(produtosceasa);
         };
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const consultarTodosCustos = async () => {
+            if (produtosceasaTotal) {
+                setLoading(true);
+                const custos: { titulo: string; custo: string; quantidade: number, status: string }[] = [];
+                for (const anuncio of produtosceasaTotal.message) {
+                    try {
+                        const custo = await consultarCusto(anuncio.codigo);
+                        custos.push({ titulo: anuncio.titulo, custo, quantidade: 0, status: anuncio.status });
+                    } catch {
+                        console.log('PRODUTO NÃO ENCONTRADO', anuncio.titulo);
+                    }
+                }
+                setCustosProdutos(custos);
+                setLoading(false);
+            }
+        };
+        consultarTodosCustos();
+    }, [produtosceasaTotal]);
 
+    const consultarCusto = async (codigo: string): Promise<string> => {
+        const produto = await ConsultarProduto(codigo);
+        const ValorMonetario = formatarValorMonetario(produto?.preco.info.custonotafiscal.toString());
+        return ValorMonetario;
+    };
+
+    const handleSubtractQuantity = (index: number) => {
+        const updatedProdutos = [...custosProdutos];
+        if (updatedProdutos[index].quantidade > 0) {
+            updatedProdutos[index].quantidade -= 1;
+            setCustosProdutos(updatedProdutos);
+        }
+    };
+
+    const handleQuantityChange = (e: string, index: number) => {
+        const updatedProdutos = [...custosProdutos];
+        const newQuantity = parseInt(e);
+        if (!isNaN(newQuantity) && newQuantity >= 0) {
+            updatedProdutos[index].quantidade = newQuantity;
+            setCustosProdutos(updatedProdutos);
+        }
+    };
+
+    const handleAddQuantity = (index: number) => {
+        const updatedProdutos = [...custosProdutos];
+        updatedProdutos[index].quantidade += 1;
+        setCustosProdutos(updatedProdutos);
+    };
+    const totalPedido = custosProdutos.reduce((total, produto) => {
+        return total + parseFloat(produto.custo.replace("R$", "").replace(",", ".")) * produto.quantidade;
+    }, 0).toFixed(2);
+
+    const totalPedidoFormatado = formatarValorMonetario(totalPedido)
+
+    const LançarPedido = () => {
+        setBotaoloading(true)
+        JogarPedido(1, JSON.stringify(custosProdutos))
+        route.push('/')
+    };
 
 
     return (
@@ -34,48 +100,54 @@ export default function Loja1() {
                     </Typography>
                 </Box>
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                    <Typography>Faça o pedido: 15/03/2024</Typography>
-
+                    <Typography>Pedido do dia: {dayjs().format('DD/MM/YYYY').toString()}</Typography>
                 </Box>
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
-                    <Box style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                        <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
-                        <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                            <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>ABACATE KG</Typography>
+                    {custosProdutos
+                    .filter(produto => produto.status === 'ativo')
+                    .map((produto, index) => (
+                        <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                            <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
+                            <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
+                                <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>{produto.titulo}</Typography>
+                            </Box>
+                            <Typography>Custo: {produto.custo}</Typography>
+                            <Box style={{ margin: 1 }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'}>
+                                <IconButton color="inherit" aria-label="subtract" onClick={() => handleSubtractQuantity(index)}>
+                                    <RiSubtractFill />
+                                </IconButton>
+                                <TextField size='small' type='number' value={produto.quantidade} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{padding: 0}} />
+                                <IconButton color="inherit" aria-label="add" onClick={() => handleAddQuantity(index)}>
+                                    <BiPlus />
+                                </IconButton>
+                            </Box>
+                            <Typography>Total: R$ {(parseFloat(produto.custo.replace("R$", "").replace(",", ".")) * produto.quantidade).toFixed(2)}</Typography>
                         </Box>
-                        <Typography>Custo: R$ 25,99</Typography>
-
-                        <Box style={{ margin: 1 }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'}>
-                            <IconButton color="inherit" aria-label="add an alarm">
-                                <RiSubtractFill />
-                            </IconButton>
-                            <TextField size='small' type='number' />
-                            <IconButton color="inherit" aria-label="add an alarm">
-                                <BiPlus />
-                            </IconButton>
-                        </Box>
-                        <Typography>Total: R$ 250,50</Typography>
-                    </Box>
+                    ))}
                 </Grid>
 
+                {loading && (
+                    <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                        <CircularProgress />
+                    </Box>
+                )}
+
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                    <Typography variant='body1' component="h1" mt={2} fontWeight={700}>
-                        Total do pedido: 
+                    <Typography variant='body1' component="h1" mt={2} fontWeight={700} style={{ textAlign: 'center' }}>
+                        Total do pedido:
                     </Typography>
-                    <Typography variant='body1' component="h1" fontWeight={700} style={{color: 'green', fontSize: 30}}>
-                        R$ 5854,00
+                    <Typography variant='body1' component="h1" fontWeight={700} style={{ color: 'green', fontSize: 30 }}>
+                        {totalPedidoFormatado}
                     </Typography>
-                    <Button variant="contained" style={{ margin: 15, padding: 2, backgroundColor: 'green' }}>
+                    <Button variant="contained" style={{ margin: 15, padding: 2, backgroundColor: 'green' }} onClick={() => LançarPedido()}>
                         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                             <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                 Realizar pedido
                             </Typography>
                         </Box>
                     </Button>
-
                 </Box>
-
             </Box>
         </ProtectedRouts>
     );

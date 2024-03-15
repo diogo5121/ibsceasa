@@ -64,13 +64,13 @@ export async function ObterFaturamento(data: string, loja: string): Promise<Fatu
 export interface Root {
     produto: Produto
     preco: Preco
-  }
-  
-  export interface Produto {
+}
+
+export interface Produto {
     info: Info
-  }
-  
-  export interface Info {
+}
+
+export interface Info {
     idproduto: number
     idsubproduto: number
     descrcomproduto: string
@@ -102,13 +102,13 @@ export interface Root {
     flagbloqueiavenda: string
     gramaturavenda: string
     valmultivendas: number
-  }
-  
-  export interface Preco {
+}
+
+export interface Preco {
     info: Info2
-  }
-  
-  export interface Info2 {
+}
+
+export interface Info2 {
     idempresa: number
     idproduto: number
     idsubproduto: number
@@ -125,7 +125,7 @@ export interface Root {
     flaginativo: string
     qtdmultiplicador: number
     valprecovarejomulti: number
-  }
+}
 
 export async function ConsultarProduto(codigo: string): Promise<Root> {
     const token = localStorage.getItem('token');
@@ -134,6 +134,50 @@ export async function ConsultarProduto(codigo: string): Promise<Root> {
         const response = await axios.post<Root>('http://45.164.8.122:30492/api/ciss/produto', {
             token: token,
             codigo: codigo,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+
+
+export interface Root3 {
+    success: boolean
+    message: Message2[]
+}
+
+export interface Message2 {
+    id: number
+    titulo: string
+    codigo: string
+    status: string
+}
+
+export async function ConsultarTabelaCeasa(tabela: string): Promise<Root3> {
+
+    try {
+        const response = await axios.post<Root3>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+
+
+
+export async function JogarPedido(loja: number, jsonData : string): Promise<Root3> {
+
+    try {
+        const response = await axios.post<Root3>('http://45.164.8.122:30492/api/banco/inserirpedido', {
+            loja: loja,
+            jsonData: jsonData,
         });
 
         return response.data;
