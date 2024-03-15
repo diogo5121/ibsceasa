@@ -172,12 +172,45 @@ export async function ConsultarTabelaCeasa(tabela: string): Promise<Root3> {
 
 
 
-export async function JogarPedido(loja: number, jsonData : string): Promise<Root3> {
+export async function JogarPedido(loja: number, jsonData: string): Promise<Root3> {
 
     try {
         const response = await axios.post<Root3>('http://45.164.8.122:30492/api/banco/inserirpedido', {
             loja: loja,
             jsonData: jsonData,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+
+export interface Root4 {
+    success: boolean
+    message: Message4[]
+}
+
+export interface Message4 {
+    id: number
+    data: string
+    loja: number
+    json: Json[]
+}
+
+export interface Json {
+    custo: string
+    status: string
+    titulo: string
+    quantidade: number
+}
+
+export async function ConsultarTabelaPedidos(tabela: string): Promise<Root4> {
+
+    try {
+        const response = await axios.post<Root4>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
         });
 
         return response.data;
