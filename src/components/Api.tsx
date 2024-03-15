@@ -60,3 +60,85 @@ export async function ObterFaturamento(data: string, loja: string): Promise<Fatu
         throw error;
     }
 }
+
+export interface Root {
+    produto: Produto
+    preco: Preco
+  }
+  
+  export interface Produto {
+    info: Info
+  }
+  
+  export interface Info {
+    idproduto: number
+    idsubproduto: number
+    descrcomproduto: string
+    descrresproduto: string
+    subdescricao: string
+    nrcodbarprod: number
+    iddivisao: number
+    descrdivisao: string
+    idsecao: number
+    descrsecao: string
+    idgrupo: number
+    descrgrupo: string
+    idsubgrupo: number
+    descrsubgrupo: string
+    embalagementrada: string
+    valgramaentrada: number
+    embalagemsaida: string
+    valgramasaida: number
+    ncm: string
+    peripi: number
+    flaginativo: string
+    dtcadastro: string
+    dtalteracao: string
+    pesoliquido: number
+    pesobruto: number
+    altura: number
+    largura: number
+    comprimento: number
+    flagbloqueiavenda: string
+    gramaturavenda: string
+    valmultivendas: number
+  }
+  
+  export interface Preco {
+    info: Info2
+  }
+  
+  export interface Info2 {
+    idempresa: number
+    idproduto: number
+    idsubproduto: number
+    valprecovarejo: number
+    valpromvarejo: number
+    valprecoatacado: number
+    valpromatacado: number
+    valcustorepos: number
+    custogerencial: number
+    custonotafiscal: number
+    dtalteracaovar: string
+    dtalteracaopromovar: string
+    dtalteracao: string
+    flaginativo: string
+    qtdmultiplicador: number
+    valprecovarejomulti: number
+  }
+
+export async function ConsultarProduto(codigo: string): Promise<Root> {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await axios.post<Root>('http://45.164.8.122:30492/api/ciss/produto', {
+            token: token,
+            codigo: codigo,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
