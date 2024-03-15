@@ -5,18 +5,11 @@ import ProtectedRouts from "@/components/ProtectedRoutes";
 import { Box, Button, CircularProgress, Container, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import NavBarPages from '@/components/NavBarPages';
 import "../app/globals.css";
+import { useRouter } from 'next/navigation';
 
 export default function PedidoCeasa() {
 
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-        };
-        fetchData();
-    }, []);
-
-
+    const route = useRouter()
 
 
     return (
@@ -28,25 +21,46 @@ export default function PedidoCeasa() {
                 <NavBarPages />
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <Typography variant="h5" component="h1" m={1} fontWeight={700}>
-                        Pedido Ceasa:
+                        Escolha uma loja:
                     </Typography>
                 </Box>
-                <Box m={3} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Selecione uma loja:</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Selecione uma loja:"
-                        >
-                            <MenuItem value={1}>Loja 1 - Matriz</MenuItem>
-                            <MenuItem value={2}>Loja 2 - Catamarã</MenuItem>
-                            <MenuItem value={3}>Loja 3 - Cabo</MenuItem>
-                            <MenuItem value={5}>Loja 5 - Vila Social</MenuItem>
-                            <MenuItem value={7}>Loja 7 - Mega Verde</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Button variant="contained" style={{ width: 300, height: 50, margin: 10, padding: 2, backgroundColor: 'green' }} onClick={() => route.push('/pedidoceasa/loja1')}>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                            <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                LOJA 1 - MATRIZ
+                            </Typography>
+                        </Box>
+                    </Button>
+                    <Button variant="contained" style={{ width: 300, height: 50, margin: 10, padding: 2, backgroundColor: 'green' }}>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                            <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                Loja 2 - Catamarã
+                            </Typography>
+                        </Box>
+                    </Button>
+                    <Button variant="contained" style={{ width: 300, height: 50, margin: 10, padding: 2, backgroundColor: 'green' }}>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                            <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                Loja 3 - Cabo
+                            </Typography>
+                        </Box>
+                    </Button>
+                    <Button variant="contained" style={{ width: 300, height: 50, margin: 10, padding: 2, backgroundColor: 'green' }}>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                            <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                Loja 5 - Vila Social
+                            </Typography>
+                        </Box>
+                    </Button>
+                    <Button variant="contained" style={{ width: 300, height: 50, margin: 10, padding: 2, backgroundColor: 'green' }}>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                            <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                Loja 7 - Mega Verde
+                            </Typography>
+                        </Box>
+                    </Button>
+                </Grid>
             </Box>
         </ProtectedRouts>
     );

@@ -69,14 +69,14 @@ export default function Precos() {
                         <Button variant="contained" style={{ backgroundColor: 'green', margin: 7 }} onClick={() => SetarCodigo()}><Search /></Button>
                     </Box>
                 </LocalizationProvider>
-                <Box display={'flex'} alignItems={'center'} justifyContent={'center'} m={5}>
+                <Box display={'flex'} alignItems={'center'} justifyContent={'center'} m={1}>
                     <Typography variant="h6" component="h1" m={0} style={{ fontSize: 16, color: 'red' }}>
                         {erro}
                     </Typography>
                 </Box>
                 {loading ? (
                     <>
-                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} m={5}>
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                             <CircularProgress />
                         </Box>
                     </>
@@ -118,7 +118,6 @@ export default function Precos() {
                                                     {formatarValorMonetario(produto?.preco.info.valprecovarejo.toString())}
                                                 </Typography>
                                             </Box>
-
                                         </Box>
                                         <Typography variant="h6" component="h1" m={1} fontWeight={700}>
                                             Margem:
@@ -126,6 +125,35 @@ export default function Precos() {
                                         <Typography variant="h6" component="h1" m={0} style={{ fontSize: 16 }}>
                                             {calcularMargem(produto?.preco.info.valprecovarejo, produto?.preco.info.custonotafiscal)}
                                         </Typography>
+                                        {produto?.preco.info.valpromvarejo === 0 ? (
+                                            <></>
+                                        ) : (
+                                            <>
+                                                <Typography variant="h6" component="h1" mt={5} fontWeight={700}>
+                                                    PROMOÇÃO:
+                                                </Typography>
+                                                <Box display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'} border={2} p={2}>
+                                                    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                                                        <Typography variant="h6" component="h1" m={1} fontWeight={700}>
+                                                            Margem Promoção
+                                                        </Typography>
+                                                        <Typography variant="h6" component="h1" m={0} fontWeight={700} style={{ fontSize: 16, color: 'orange' }}>
+                                                            {calcularMargem(produto?.preco.info.valpromvarejo, produto?.preco.info.custonotafiscal)}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                                                        <Typography variant="h6" component="h1" m={1} fontWeight={700}>
+                                                            Preço Venda
+                                                        </Typography>
+                                                        <Typography variant="h6" component="h1" m={0} fontWeight={700} style={{ fontSize: 16, color: 'green' }}>
+                                                            {formatarValorMonetario(produto?.preco.info.valpromvarejo.toString())}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </>
+                                        )}
+
+
                                     </Box>
                                 )}
                             </>
