@@ -11,7 +11,7 @@ import '@/app/globals.css'
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 
-export default function Loja1() {
+export default function Loja4() {
     const [loading, setLoading] = useState(true);
     const [produtosceasaTotal, setProdutosCeasaTotal] = useState<Root3>();
     const [botaoloading, setBotaoloading] = useState(false);
@@ -82,7 +82,7 @@ export default function Loja1() {
 
     const LançarPedido = () => {
         setBotaoloading(true)
-        JogarPedido(1, JSON.stringify(custosProdutos))
+        JogarPedido(4, JSON.stringify(custosProdutos))
         route.push('/')
     };
 
@@ -96,7 +96,7 @@ export default function Loja1() {
                 <NavBarPages />
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <Typography variant="h5" component="h1" m={1} fontWeight={700}>
-                        Loja 1
+                        Loja 5 - Vila Social
                     </Typography>
                 </Box>
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
@@ -105,26 +105,26 @@ export default function Loja1() {
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {custosProdutos
-                    .filter(produto => produto.status === 'ativo')
-                    .map((produto, index) => (
-                        <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                            <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
-                            <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                                <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>{produto.titulo}</Typography>
+                        .filter(produto => produto.status === 'ativo')
+                        .map((produto, index) => (
+                            <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
+                                <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
+                                    <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>{produto.titulo}</Typography>
+                                </Box>
+                                <Typography>Custo: {produto.custo}</Typography>
+                                <Box style={{ margin: 1 }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'}>
+                                    <IconButton color="inherit" aria-label="subtract" onClick={() => handleSubtractQuantity(index)}>
+                                        <RiSubtractFill />
+                                    </IconButton>
+                                    <TextField size='small' type='number' value={produto.quantidade} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{ padding: 0 }} />
+                                    <IconButton color="inherit" aria-label="add" onClick={() => handleAddQuantity(index)}>
+                                        <BiPlus />
+                                    </IconButton>
+                                </Box>
+                                <Typography>Total: R$ {(parseFloat(produto.custo.replace("R$", "").replace(",", ".")) * produto.quantidade).toFixed(2)}</Typography>
                             </Box>
-                            <Typography>Custo: {produto.custo}</Typography>
-                            <Box style={{ margin: 1 }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'}>
-                                <IconButton color="inherit" aria-label="subtract" onClick={() => handleSubtractQuantity(index)}>
-                                    <RiSubtractFill />
-                                </IconButton>
-                                <TextField size='small' type='number' value={produto.quantidade} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{padding: 0}} />
-                                <IconButton color="inherit" aria-label="add" onClick={() => handleAddQuantity(index)}>
-                                    <BiPlus />
-                                </IconButton>
-                            </Box>
-                            <Typography>Total: R$ {(parseFloat(produto.custo.replace("R$", "").replace(",", ".")) * produto.quantidade).toFixed(2)}</Typography>
-                        </Box>
-                    ))}
+                        ))}
                 </Grid>
 
                 {loading && (

@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { HistoryToggleOffSharp, PriceChange } from "@mui/icons-material";
+import { HistoryToggleOffSharp, NoteAlt, Notes, PriceChange } from "@mui/icons-material";
+import { BiBox, BiPencil } from "react-icons/bi";
+import { BsBox, BsBox2, BsBoxFill } from "react-icons/bs";
 
 
 
@@ -29,36 +31,40 @@ export default function Home() {
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                Realizar Pedido Ceasa
+                Fazer Pedido
               </Typography>
               <AssignmentIcon />
+            </Box>
+          </Button>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/editarpedido')}>
+            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+              <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                Editar pedido
+              </Typography>
+              <BiPencil size={25} />
             </Box>
           </Button>
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/gerenciar-pedidos')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                GERENCIAR PEDIDOS
+                RELATORIOS DE PEDIDOS
               </Typography>
-              <BorderColorIcon />
+              <Notes />
             </Box>
           </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/compra-ceasa')}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/gerenciar-pedidos')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                DEL - CEASA
+                PRODUTOS CEASA
               </Typography>
-              <BorderColorIcon />
-            </Box>
-          </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/precos')}>
-            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
-              <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                HISTORICO DE PEDIDOS
-              </Typography>
-              <HistoryToggleOffSharp />
+              <BsBoxFill size={25} />
             </Box>
           </Button>
         </Grid>
+
+
+
+
 
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
           <Typography variant="h5" component="h1" m={2} fontWeight={700}>

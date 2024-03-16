@@ -97,9 +97,6 @@ export default function Faturamento() {
                 {valorProgresso === 100 ? (
                     <>
                         <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-
-
-
                             <Box style={{ width: 140, height: 160, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                 <Box style={{ margin: 10, padding: 5, backgroundColor: 'gray' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                                     <StoreSharp />

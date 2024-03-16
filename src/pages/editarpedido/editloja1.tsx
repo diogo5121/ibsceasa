@@ -11,7 +11,7 @@ import '@/app/globals.css'
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 
-export default function Loja1() {
+export default function EditLoja1() {
     const [loading, setLoading] = useState(true);
     const [produtosceasaTotal, setProdutosCeasaTotal] = useState<Root3>();
     const [botaoloading, setBotaoloading] = useState(false);
@@ -143,7 +143,7 @@ export default function Loja1() {
                     <Button variant="contained" style={{ margin: 15, padding: 2, backgroundColor: 'green' }} onClick={() => LançarPedido()}>
                         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                             <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                                Realizar pedido
+                                EDITAR PEDIDO
                             </Typography>
                         </Box>
                     </Button>

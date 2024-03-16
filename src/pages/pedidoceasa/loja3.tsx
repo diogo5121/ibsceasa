@@ -11,7 +11,7 @@ import '@/app/globals.css'
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 
-export default function Loja1() {
+export default function Loja3() {
     const [loading, setLoading] = useState(true);
     const [produtosceasaTotal, setProdutosCeasaTotal] = useState<Root3>();
     const [botaoloading, setBotaoloading] = useState(false);
@@ -82,7 +82,7 @@ export default function Loja1() {
 
     const LançarPedido = () => {
         setBotaoloading(true)
-        JogarPedido(1, JSON.stringify(custosProdutos))
+        JogarPedido(3, JSON.stringify(custosProdutos))
         route.push('/')
     };
 
@@ -96,7 +96,7 @@ export default function Loja1() {
                 <NavBarPages />
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <Typography variant="h5" component="h1" m={1} fontWeight={700}>
-                        Loja 1
+                        Loja 3
                     </Typography>
                 </Box>
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
