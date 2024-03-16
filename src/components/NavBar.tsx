@@ -3,6 +3,7 @@ import { AppBar, Badge, Box, Button, IconButton, Toolbar, Typography } from "@mu
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export default function NavBar() {
+  const conta = localStorage.getItem('nome')
   function Sair() {
     localStorage.removeItem('token');
     window.location.reload();
@@ -15,7 +16,7 @@ export default function NavBar() {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontSize: {xs: 15, md: 20} }}>
           SUPERMERCADOS IBS
         </Typography>
-        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, marginRight: {xs: 0, md: 2} }} alignItems={'center'} justifyContent={'center'}>
           <IconButton
             size="large"
             aria-label="show 17 new notifications"
@@ -25,6 +26,9 @@ export default function NavBar() {
               <NotificationsIcon />
             </Badge>
           </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontSize: {xs: 15, md: 20} }}>
+          Conta: {conta}
+        </Typography>
         </Box>
         <Button variant="contained" style={{ backgroundColor: 'red' }} onClick={() => { Sair() }}>
           Sair
