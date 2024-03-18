@@ -16,7 +16,7 @@ export default function ProtectedRoutes({ children }: Readonly<{ children: React
     }
 
     const lastLogin = dayjs(lastLoginString);
-    const sixHoursAgo = dayjs().subtract(1, 'hours');
+    const sixHoursAgo = dayjs().subtract(4, 'hours');
 
     if (lastLogin.isBefore(sixHoursAgo)) {
       localStorage.removeItem('token');

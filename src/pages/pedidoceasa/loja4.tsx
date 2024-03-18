@@ -39,6 +39,7 @@ export default function Loja4() {
                         console.log('PRODUTO NÃO ENCONTRADO', anuncio.titulo);
                     }
                 }
+                
                 setCustosProdutos(custos);
                 setLoading(false);
             }
@@ -80,9 +81,9 @@ export default function Loja4() {
 
     const totalPedidoFormatado = formatarValorMonetario(totalPedido)
 
-    const LançarPedido = () => {
+    const LançarPedido = async () => {
         setBotaoloading(true)
-        JogarPedido(4, JSON.stringify(custosProdutos))
+        await JogarPedido(4, JSON.stringify(custosProdutos))
         route.push('/')
     };
 

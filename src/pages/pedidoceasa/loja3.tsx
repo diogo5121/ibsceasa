@@ -80,9 +80,9 @@ export default function Loja3() {
 
     const totalPedidoFormatado = formatarValorMonetario(totalPedido)
 
-    const LançarPedido = () => {
+    const LançarPedido = async () => {
         setBotaoloading(true)
-        JogarPedido(3, JSON.stringify(custosProdutos))
+        await JogarPedido(3, JSON.stringify(custosProdutos))
         route.push('/')
     };
 

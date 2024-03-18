@@ -11,7 +11,7 @@ import '@/app/globals.css'
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 
-export default function EditLoja1() {
+export default function EditLoja3() {
     const [loading, setLoading] = useState(true);
     const [produtosceasaTotal, setProdutosCeasaTotal] = useState<Root3>();
     const [botaoloading, setBotaoloading] = useState(false);
@@ -35,7 +35,7 @@ export default function EditLoja1() {
                 const pedidosHoje = pedidos?.message.filter(pedido => {
                     return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
                 });
-                const pedidoDigitado = pedidosHoje?.filter(pedids => pedids.loja === 1)[0].json
+                const pedidoDigitado = pedidosHoje?.filter(pedids => pedids.loja === 3)[0].json
 
                 setCustosProdutos(pedidoDigitado);
                 setLoading(false);
@@ -74,7 +74,7 @@ export default function EditLoja1() {
 
     const LançarPedido = async () => {
         setBotaoloading(true)
-        await JogarPedido(1, JSON.stringify(custosProdutos))
+        await JogarPedido(3, JSON.stringify(custosProdutos))
         route.push('/')
     };
 
@@ -88,7 +88,7 @@ export default function EditLoja1() {
                 <NavBarPages />
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <Typography variant="h5" component="h1" m={1} fontWeight={700}>
-                        Loja 1
+                        Loja 3
                     </Typography>
                 </Box>
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
