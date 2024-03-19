@@ -10,6 +10,7 @@ import { formatarValorMonetario } from '@/utils/ReformularValor';
 import '@/app/globals.css'
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
 export default function Loja5() {
     const [loading, setLoading] = useState(true);
@@ -108,7 +109,9 @@ export default function Loja5() {
                         .filter(produto => produto.status === 'ativo')
                         .map((produto, index) => (
                             <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                                <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
+                                                        <Image src='/images/ibs.png' alt="Ibs-Logo" width={50} height={50} style={{ marginBottom: '10px', margin: 20 }} />
+
+
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
                                     <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>{produto.titulo}</Typography>
                                 </Box>

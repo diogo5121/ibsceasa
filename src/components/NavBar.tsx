@@ -1,6 +1,7 @@
 'use client'
 import { AppBar, Badge, Box, Button, IconButton, Toolbar, Typography } from "@mui/material"
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Image from "next/image";
 
 export default function NavBar() {
   const conta = localStorage.getItem('nome')
@@ -12,7 +13,7 @@ export default function NavBar() {
   return (
     <AppBar position="static">
       <Toolbar style={{ backgroundColor: 'green' }}>
-        <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '70px', marginBottom: '10px', margin: 20 }} />
+      <Image src='/images/ibs.png' alt="Ibs-Logo" width={70} height={70} style={{ marginBottom: '10px', margin: 20 }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontSize: {xs: 15, md: 20} }}>
           SUPERMERCADOS IBS
         </Typography>

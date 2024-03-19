@@ -4,6 +4,7 @@ import { Box, Button, CircularProgress, Container, Input, TextField, Typography 
 import { useEffect, useState } from "react";
 import { fazerLogin } from "@/components/Api";
 import "../app/globals.css";
+import Image from 'next/image';
 
 export default function Login() {
     const [senha, setsenha] = useState('');
@@ -33,7 +34,7 @@ export default function Login() {
         <main>
             <Box display='flex' flexDirection={'column'} alignItems={'center'} justifyContent={'center'} bgcolor={'#e3e1e1'} height={'100vh'}>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} bgcolor={'white'} p={4} borderRadius={5} sx={{ boxShadow: 3 }}>
-                    <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '180px', marginBottom: '10px' }} />
+                    <Image src='/images/ibs.png' alt="Ibs-Logo" width={180} height={180} style={{ marginBottom: '10px', margin: 20 }} />
                     <Typography variant="h6" component="div" fontWeight={700} fontSize={30}>
                         LOGIN
                     </Typography>

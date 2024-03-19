@@ -26,7 +26,7 @@ export default function ProtectedRoutes({ children }: Readonly<{ children: React
 
     setIsAuthenticated(true);
 
-  }, []);
+  }, [router]);
 
   return isAuthenticated ? <>{children}</> : null;
 }

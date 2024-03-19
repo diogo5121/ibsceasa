@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { BiPencil } from 'react-icons/bi';
 import { formatarValorMonetario } from '@/utils/ReformularValor';
 
-export default function editarpedido() {
+export default function Editarpedido() {
     const route = useRouter()
     const [pedidos, setpedidos] = useState<Root4>()
     const [loading, setLoading] = useState(false)
@@ -27,7 +27,7 @@ export default function editarpedido() {
             } catch {
                 console.log('SEM PEDIDOS')
                 setLoading(true)
-
+                route.push('/')
 
             }
         }
