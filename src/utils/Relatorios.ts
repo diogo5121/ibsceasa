@@ -202,13 +202,13 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
             titulo: item.titulo,
             quantidade: item.quantidade
         });
-    }
-
-    const Pedidoloja1 = pedidossss.filter(pedidossssssss => pedidossssssss.loja = 1)[0].json ?? [] 
-    const Pedidoloja2 = pedidosHoje.filter(pedido => pedido.loja === 2)[0]?.json ?? [];
-    const Pedidoloja3 = pedidosHoje.filter(pedido => pedido.loja === 3)[0]?.json ?? [];
-    const Pedidoloja4 = pedidosHoje.filter(pedido => pedido.loja === 4)[0]?.json ?? [];
-    const Pedidoloja5 = pedidosHoje.filter(pedido => pedido.loja === 5)[0]?.json ?? [];
+    }  
+    pedidossss.sort((a, b) => a.loja - b.loja);
+    const Pedidoloja1 = pedidossss[0].json ?? [] 
+    const Pedidoloja2 = pedidossss[1].json ?? []
+    const Pedidoloja3 = pedidossss[2].json ?? []
+    const Pedidoloja4 = pedidossss[3].json ?? []
+    const Pedidoloja5 = pedidossss[4].json ?? []
 
     const doc = new jsPDF('landscape');
     let y = 10;
@@ -217,8 +217,8 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
     doc.text('Loja 1', 80, y);
     doc.text('Loja 2', 105, y);
     doc.text('Loja 3', 130, y);
-    doc.text('Loja 4', 155, y);
-    doc.text('Loja 5', 180, y);
+    doc.text('Loja 5', 155, y);
+    doc.text('Loja 7', 180, y);
     doc.text('TOTAL', 210, y);
     doc.text('CUSTO', 235, y);
     doc.text('VALOR TOTAL', 260, y);
