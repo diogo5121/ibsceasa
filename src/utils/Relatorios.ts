@@ -2,9 +2,10 @@
 import { ConsultarTabelaPedidos, Json, Message4 } from "@/components/Api";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
+import { x } from "pdfkit";
 
 
-const tamanhoFonte = 10; // Defina o tamanho da fonte
+const tamanhoFonte = 9; // Defina o tamanho da fonte
 
 export function gerarRelatorioPDF(produtos: Message4[], numeroLoja: number): void {
     // Cria um novo documento PDF
@@ -118,26 +119,27 @@ export async function gerarRelatorioPDFTodas() {
     doc.setFontSize(tamanhoFonte);
     let soma = 0;
     let ContaProdutos = 0;
-    let numeroPorPagina = 25;
+    let numeroPorPagina = 60;
     doc.text('Descrição', 10, y);
     doc.text('Ultimo Custo', 80, y);
     doc.text('Quantidade'.toString(), 110, y);
     doc.text('Subtotal', 150, y);
 
     doc.setLineWidth(0.5); // Define a largura da linha
-    doc.line(10, y + 5, 200, y + 5);
-    y += 10;
+    doc.line(10, y + 1, 200, y + 1);
+    y += 5;
     // Itera sobre os produtos para esta página
     jsonGeral
         .filter(produto => produto.quantidade != 0)
         .map(produto => {
             if (ContaProdutos === numeroPorPagina) {
                 doc.addPage()
+                y = 30;
                 doc.setFontSize(18);
                 doc.text(`PEDIDO CEASA TODAS AS LOJAS - IBS - ${day}`, 10, 20);
                 doc.setFontSize(tamanhoFonte);
-                y = 30;
-                numeroPorPagina += 25
+                y += 4;
+                numeroPorPagina += 60
             }
             const subtotal = parseFloat(produto.custo.replace("R$", "").replace(",", ".")) * produto.quantidade;
             doc.text(produto.titulo, 10, y);
@@ -146,7 +148,7 @@ export async function gerarRelatorioPDFTodas() {
             doc.text(`R$ ${subtotal.toFixed(2)}`, 150, y);
             soma += subtotal;
             ContaProdutos += 1;
-            y += 10; // Incrementa a posição Y para a próxima linha
+            y += 4; // Incrementa a posição Y para a próxima linha
 
         })
 
@@ -164,7 +166,7 @@ export async function gerarRelatorioPDFTodas() {
 }
 
 
-export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
+export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
     const pedidos = await ConsultarTabelaPedidos('pedidos');
     const dataHoje = dayjs().format('YYYY-MM-DD');
     const pedidosHoje = pedidos?.message.filter(pedido => {
@@ -202,9 +204,9 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
             titulo: item.titulo,
             quantidade: item.quantidade
         });
-    }  
+    }
     pedidossss.sort((a, b) => a.loja - b.loja);
-    const Pedidoloja1 = pedidossss[0].json ?? [] 
+    const Pedidoloja1 = pedidossss[0].json ?? []
     const Pedidoloja2 = pedidossss[1].json ?? []
     const Pedidoloja3 = pedidossss[2].json ?? []
     const Pedidoloja4 = pedidossss[3].json ?? []
@@ -213,7 +215,7 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
     const doc = new jsPDF('landscape');
     let y = 10;
     doc.setFontSize(13);
-    doc.text('Descrição', 10, y);
+    doc.text('Descrição', 20, y);
     doc.text('Loja 1', 80, y);
     doc.text('Loja 2', 105, y);
     doc.text('Loja 3', 130, y);
@@ -223,7 +225,7 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
     doc.text('CUSTO', 235, y);
     doc.text('VALOR TOTAL', 260, y);
     doc.setLineWidth(0.5);
-    doc.line(10, y + 5, 290, y + 5);
+    doc.line(20, y + 2, 290, y + 2);
     doc.setFontSize(10);
 
     const todasAsLojas = [...Pedidoloja1, ...Pedidoloja2, ...Pedidoloja3, ...Pedidoloja4, ...Pedidoloja5];
@@ -232,8 +234,8 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
 
     let totalQuantidade = 0;
     let ContaProdutos = 0;
-    let numeroPorPagina = 12;
-    y += 15;
+    let numeroPorPagina = 20;
+    y += 10;
 
     jsonGeral.forEach((pedido, index) => {
         if (pedido.quantidade === 0) {
@@ -243,20 +245,20 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
                 y = 10
                 doc.addPage()
                 doc.setFontSize(13);
-                doc.text('Descrição', 10, y);
+                doc.text('Descrição', 20, y);
                 doc.text('Loja 1', 80, y);
                 doc.text('Loja 2', 105, y);
                 doc.text('Loja 3', 130, y);
-                doc.text('Loja 4', 155, y);
-                doc.text('Loja 5', 180, y);
+                doc.text('Loja 5', 155, y);
+                doc.text('Loja 7', 180, y);
                 doc.text('TOTAL', 210, y);
                 doc.text('CUSTO', 235, y);
                 doc.text('VALOR TOTAL', 260, y);
                 doc.setLineWidth(0.5);
-                doc.line(10, y + 5, 290, y + 5);
+                doc.line(20, y + 2, 290, y + 2);
                 doc.setFontSize(10);
-                numeroPorPagina += 12
-                y += 15;
+                numeroPorPagina += 20
+                y += 10;
             }
             const quantidadeLoja1 = Pedidoloja1.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
             const quantidadeLoja2 = Pedidoloja2.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
@@ -264,18 +266,18 @@ export async function gerarRelatorioPDFDEL( pedidossss : Message4[]) {
             const quantidadeLoja4 = Pedidoloja4.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
             const quantidadeLoja5 = Pedidoloja5.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
 
-            
-            doc.text(pedido.titulo, 10, y);
-            doc.setFontSize(15);
+            y += 1;
+            doc.text(pedido.titulo, 20, y);
+            doc.setFontSize(14);
             doc.text(quantidadeLoja1.toString(), 80, y);
             doc.text(quantidadeLoja2.toString(), 105, y);
             doc.text(quantidadeLoja3.toString(), 130, y);
             doc.text(quantidadeLoja4.toString(), 155, y);
             doc.text(quantidadeLoja5.toString(), 180, y);
             doc.text(pedido.quantidade.toString(), 210, y);
-            doc.line(10, y + 5, 290, y + 5);
+            doc.line(20, y + 2, 290, y + 2);
             doc.setFontSize(10);
-            y += 15;
+            y += 8;
             ContaProdutos += 1
         }
 

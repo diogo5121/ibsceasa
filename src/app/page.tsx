@@ -27,7 +27,7 @@ export default function Home() {
             MENU CEASA:
           </Typography>
         </Box>
-        <Grid container style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
@@ -71,7 +71,7 @@ export default function Home() {
             MENU GERAL:
           </Typography>
         </Box>
-        <Grid container style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { router.push('/faturamento'); }}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
@@ -89,6 +89,7 @@ export default function Home() {
             </Box>
           </Button>
         </Grid>
+      
       </Box>
     </ProtectedRouts>
   );
