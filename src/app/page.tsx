@@ -44,7 +44,7 @@ export default function Home() {
               <BiPencil size={25} />
             </Box>
           </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/gerenciar-pedidos')}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/relatorios')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                 RELATORIOS DE PEDIDOS
@@ -52,7 +52,7 @@ export default function Home() {
               <Notes />
             </Box>
           </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/gerenciar-pedidos')}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/produtos')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                 PRODUTOS CEASA
@@ -84,14 +84,6 @@ export default function Home() {
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                 PREÇOS
-              </Typography>
-              <PriceChange />
-            </Box>
-          </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/promocoes')}>
-            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
-              <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                PROMOÇÕES DE HOJE
               </Typography>
               <PriceChange />
             </Box>

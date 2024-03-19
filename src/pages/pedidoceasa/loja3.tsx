@@ -31,7 +31,7 @@ export default function Loja3() {
             if (produtosceasaTotal) {
                 setLoading(true);
                 const custos: { titulo: string; custo: string; quantidade: number, status: string }[] = [];
-                for (const anuncio of produtosceasaTotal.message) {
+                for (const anuncio of produtosceasaTotal.message.filter(produto => produto.status === 'ativo')) {
                     try {
                         const custo = await consultarCusto(anuncio.codigo);
                         custos.push({ titulo: anuncio.titulo, custo, quantidade: 0, status: anuncio.status });
@@ -62,7 +62,7 @@ export default function Loja3() {
 
     const handleQuantityChange = (e: string, index: number) => {
         const updatedProdutos = [...custosProdutos];
-        const newQuantity = parseInt(e);
+        const newQuantity = parseInt(e, 10); 
         if (!isNaN(newQuantity) && newQuantity >= 0) {
             updatedProdutos[index].quantidade = newQuantity;
             setCustosProdutos(updatedProdutos);
@@ -86,6 +86,8 @@ export default function Loja3() {
         route.push('/')
     };
 
+    
+
 
     return (
         <ProtectedRouts>
@@ -105,6 +107,7 @@ export default function Loja3() {
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {custosProdutos
+                    .sort((a, b) => a.titulo.localeCompare(b.titulo))
                     .filter(produto => produto.status === 'ativo')
                     .map((produto, index) => (
                         <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -117,7 +120,7 @@ export default function Loja3() {
                                 <IconButton color="inherit" aria-label="subtract" onClick={() => handleSubtractQuantity(index)}>
                                     <RiSubtractFill />
                                 </IconButton>
-                                <TextField size='small' type='number' value={produto.quantidade} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{padding: 0}} />
+                                <TextField size='small' type='number' value={produto.quantidade.toString()} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{padding: 0}} />
                                 <IconButton color="inherit" aria-label="add" onClick={() => handleAddQuantity(index)}>
                                     <BiPlus />
                                 </IconButton>

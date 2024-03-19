@@ -97,6 +97,7 @@ export default function EditLoja5() {
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {custosProdutos
+                        .sort((a, b) => a.titulo.localeCompare(b.titulo))
                         .filter(produto => produto.status === 'ativo')
                         .map((produto, index) => (
                             <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>

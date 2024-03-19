@@ -219,3 +219,17 @@ export async function ConsultarTabelaPedidos(tabela: string): Promise<Root4> {
         throw error;
     }
 }
+
+export async function MudarStatus(codigo: string){
+
+    try {
+        const response = await axios.post('http://45.164.8.122:30492/api/banco/statusproduto', {
+            codigo,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}

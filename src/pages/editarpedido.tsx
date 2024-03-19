@@ -30,8 +30,6 @@ export default function editarpedido() {
 
 
             }
-
-
         }
         PuxatPedidos()
     }, [])

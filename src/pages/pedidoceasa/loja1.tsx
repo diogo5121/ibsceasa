@@ -31,7 +31,7 @@ export default function Loja1() {
             if (produtosceasaTotal) {
                 setLoading(true);
                 const custos: { titulo: string; custo: string; quantidade: number, status: string }[] = [];
-                for (const anuncio of produtosceasaTotal.message) {
+                for (const anuncio of produtosceasaTotal.message.filter(produto => produto.status === 'ativo')) {
                     try {
                         const custo = await consultarCusto(anuncio.codigo);
                         custos.push({ titulo: anuncio.titulo, custo, quantidade: 0, status: anuncio.status });
@@ -62,12 +62,13 @@ export default function Loja1() {
 
     const handleQuantityChange = (e: string, index: number) => {
         const updatedProdutos = [...custosProdutos];
-        const newQuantity = parseInt(e);
+        const newQuantity = parseInt(e, 10); 
         if (!isNaN(newQuantity) && newQuantity >= 0) {
             updatedProdutos[index].quantidade = newQuantity;
             setCustosProdutos(updatedProdutos);
         }
     };
+    
 
     const handleAddQuantity = (index: number) => {
         const updatedProdutos = [...custosProdutos];
@@ -105,10 +106,11 @@ export default function Loja1() {
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {custosProdutos
+                    .sort((a, b) => a.titulo.localeCompare(b.titulo))
                     .filter(produto => produto.status === 'ativo')
                     .map((produto, index) => (
                         <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                            <img src='/images/ibs.png' alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
+                            <img src={`http://45.164.8.122:30492/images/${produto.titulo}.png`} alt="Ibs-Logo" style={{ width: '50px', marginBottom: '10px', margin: 20 }} />
                             <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
                                 <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>{produto.titulo}</Typography>
                             </Box>
@@ -117,7 +119,7 @@ export default function Loja1() {
                                 <IconButton color="inherit" aria-label="subtract" onClick={() => handleSubtractQuantity(index)}>
                                     <RiSubtractFill />
                                 </IconButton>
-                                <TextField size='small' type='number' value={produto.quantidade} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{padding: 0}} />
+                                <TextField size='small' type='number' value={produto.quantidade.toString()} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{padding: 0}} />
                                 <IconButton color="inherit" aria-label="add" onClick={() => handleAddQuantity(index)}>
                                     <BiPlus />
                                 </IconButton>

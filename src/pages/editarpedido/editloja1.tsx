@@ -36,7 +36,6 @@ export default function EditLoja1() {
                     return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
                 });
                 const pedidoDigitado = pedidosHoje?.filter(pedids => pedids.loja === 1)[0].json
-
                 setCustosProdutos(pedidoDigitado);
                 setLoading(false);
             }
@@ -97,6 +96,7 @@ export default function EditLoja1() {
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {custosProdutos
+                        .sort((a, b) => a.titulo.localeCompare(b.titulo))
                         .filter(produto => produto.status === 'ativo')
                         .map((produto, index) => (
                             <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
