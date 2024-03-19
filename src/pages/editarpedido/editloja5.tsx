@@ -139,7 +139,7 @@ export default function EditLoja5() {
                     <Button variant="contained" style={{ margin: 15, padding: 2, backgroundColor: 'green' }} onClick={() => LançarPedido()}>
                         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                             <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                                EDITAR PEDIDO
+                                SALVAR
                             </Typography>
                         </Box>
                     </Button>
