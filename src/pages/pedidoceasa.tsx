@@ -43,7 +43,7 @@ export default function PedidoCeasa() {
             <Box display={'flex'} flexDirection={'column'} bgcolor={'#e3e1e1'} sx={{ height: { xs: '130vh', md: '100vh' } }}>
                 <NavBarPages />
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                    <Typography variant="h5" component="h1" m={1} fontWeight={700}>
+                    <Typography variant="h5" component="h1" m={1} fontWeight={700} textAlign={'center'}>
                         Escolha uma loja para realizar o pedido:
                     </Typography>
                 </Box>

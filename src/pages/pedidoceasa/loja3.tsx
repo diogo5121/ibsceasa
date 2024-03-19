@@ -111,8 +111,8 @@ export default function Loja3() {
                     .sort((a, b) => a.titulo.localeCompare(b.titulo))
                     .filter(produto => produto.status === 'ativo')
                     .map((produto, index) => (
-                        <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                                                    <Image src='/images/ibs.png' alt="Ibs-Logo" width={50} height={50} style={{ marginBottom: '10px', margin: 20 }} />
+                        <Box key={index} style={{ width: 160, height: 250, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                                   <Image src={`/images/${produto.titulo}.png`} alt="Ibs-Logo" width={50} height={50} style={{ marginBottom: '10px', margin: 20 }} />
 
 
                             <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
@@ -146,7 +146,7 @@ export default function Loja3() {
                     <Typography variant='body1' component="h1" fontWeight={700} style={{ color: 'green', fontSize: 30 }}>
                         {totalPedidoFormatado}
                     </Typography>
-                    <Button variant="contained" style={{ margin: 15, padding: 2, backgroundColor: 'green' }} onClick={() => LançarPedido()}>
+                    <Button variant="contained" style={{ margin: 15, padding: 2, backgroundColor: 'green' }} onClick={() => LançarPedido()} disabled={loading}>
                         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                             <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                 Realizar pedido

@@ -13,7 +13,7 @@ export default function NavBar() {
   return (
     <AppBar position="static">
       <Toolbar style={{ backgroundColor: 'green' }}>
-      <Image src='/images/ibs.png' alt="Ibs-Logo" width={70} height={70} style={{ marginBottom: '10px', margin: 20 }} />
+      <Image src='/images/ibs.png' alt="Ibs-Logo" width={80} height={50} style={{ marginBottom: '10px', margin: 20 }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontSize: {xs: 15, md: 20} }}>
           SUPERMERCADOS IBS
         </Typography>

@@ -100,8 +100,8 @@ export default function EditLoja1() {
                         .sort((a, b) => a.titulo.localeCompare(b.titulo))
                         .filter(produto => produto.status === 'ativo')
                         .map((produto, index) => (
-                            <Box key={index} style={{ width: 150, height: 200, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                                                        <Image src='/images/ibs.png' alt="Ibs-Logo" width={50} height={50} style={{ marginBottom: '10px', margin: 20 }} />
+                            <Box key={index} style={{ width: 160, height: 250, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                                       <Image src={`/images/${produto.titulo}.png`} alt="Ibs-Logo" width={50} height={50} style={{ marginBottom: '10px', margin: 20 }} />
 
 
                                 <Box style={{ margin: 1, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
