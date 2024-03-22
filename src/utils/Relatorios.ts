@@ -2,7 +2,6 @@
 import { ConsultarTabelaPedidos, Json, Message4 } from "@/components/Api";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
-import { x } from "pdfkit";
 
 
 const tamanhoFonte = 9; // Defina o tamanho da fonte
@@ -165,6 +164,46 @@ export async function gerarRelatorioPDFTodas() {
     console.log('Relatório PDF gerado');
 }
 
+export async function gerarTodasLojas(days : number) {
+    const pedidos = await ConsultarTabelaPedidos('pedidos');
+    const dataHoje = dayjs().subtract(days, 'days').format('YYYY-MM-DD');
+    const pedidosHoje = pedidos?.message.filter(pedido => {
+        return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
+    });
+
+    function combinarItens(jsonList: Json[]): Json[] {
+        const combinedDict: { [key: string]: Json } = {};
+
+        for (const item of jsonList) {
+            const key = `${item.titulo}-${item.custo}`;
+
+            if (key in combinedDict) {
+                combinedDict[key].quantidade += item.quantidade;
+            } else {
+                combinedDict[key] = item;
+            }
+        }
+        return Object.values(combinedDict);
+    }
+
+    const todasAsLojas: Json[] = [];
+    for (const pedido of pedidosHoje) {
+        todasAsLojas.push(...pedido.json);
+    }
+
+    const itensCombinados: Json[] = combinarItens(todasAsLojas);
+
+    const jsonGeral: Json[] = [];
+    for (const item of itensCombinados) {
+        jsonGeral.push({
+            custo: item.custo,
+            status: item.status,
+            titulo: item.titulo,
+            quantidade: item.quantidade
+        });
+    }
+    return jsonGeral;
+}
 
 export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
     const pedidos = await ConsultarTabelaPedidos('pedidos');
