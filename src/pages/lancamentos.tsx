@@ -3,18 +3,17 @@ import Head from 'next/head';
 import ProtectedRouts from "@/components/ProtectedRoutes";
 import { Box, Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, IconButton, Modal, TextField, Typography } from "@mui/material";
 import NavBarPages from '@/components/NavBarPages';
-import { ConsultarProduto, ConsultarTabelaCeasa, ConsultarTabelaPedidos, JogarPedido, Json, Root3 } from '@/components/Api';
+import { ConsultarProduto, ConsultarTabelaCeasa, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, FazerLancamento, JogarPedido, Json, Lancamento, Root3 } from '@/components/Api';
 import '@/app/globals.css'
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { gerarTodasLojas } from '@/utils/Relatorios';
-import { CheckBox } from '@mui/icons-material';
-
 
 export default function Lancamentos() {
     const [loading, setLoading] = useState(true);
     const [produtosPedido, setProdutosPedidos] = useState<Json[]>();
     const [produtoEditando, setProdutoEditando] = useState<Json>();
+    const [LancamentoHoje, setLancamentosHoje] = useState<Lancamento[]>();
     const [open, setOpen] = useState(false);
 
 
@@ -32,19 +31,72 @@ export default function Lancamentos() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const produtosceasa = await gerarTodasLojas(0);
-                setProdutosPedidos(produtosceasa.filter(produto => produto.quantidade > 0));
+                const produtosceasa = await gerarTodasLojas(2);
+                const produtosPedidoFormulado = produtosceasa.filter(produto => produto.quantidade > 0)
+                setProdutosPedidos(produtosPedidoFormulado);
 
-                //se não tiver, criar uma tabela de lançamento no banco de dados
 
-            } catch (error) {
-                console.error('Ocorreu um erro ao carregar os produtos:', error);
+                try {
+                    setLoading(true);
+                    const lancamentos = await ConsultarTabelaLancamentos('lancamento')
+                    const dataHoje = dayjs().format('YYYY-MM-DD');
+                    const lancamentoHoje = lancamentos?.message.filter(
+                        lancamento => dayjs(lancamento.data).format('YYYY-MM-DD') === dataHoje
+                    )
+
+                    console.log('lacamento hoje:', lancamentoHoje)
+
+                    if (lancamentoHoje.length >= 1) {
+                        console.log('JA FOI CRIADO O LANCAMENTO')
+                        setLancamentosHoje(lancamentoHoje[0].lancamento)
+                    } else {
+                        console.log('Não foi criado')
+                        const TabelaReformulada: Lancamento[] = produtosPedidoFormulado.map(fruta => ({
+                            custo: "R$ 0",
+                            status: fruta.status,
+                            titulo: fruta.titulo,
+                            quantidade: 0,
+                            lancado: false
+                        }))
+
+                        await FazerLancamento(TabelaReformulada)
+                        setLancamentosHoje(TabelaReformulada)
+                    }
+
+                } catch (error) {
+                    console.error('Ocorreu um erro ao carregar os lancamentos:', error);
+                    console.log('Não foi criado')
+                    const TabelaReformulada: Lancamento[] = produtosPedidoFormulado.map(fruta => ({
+                        custo: "R$ 0",
+                        status: fruta.status,
+                        titulo: fruta.titulo,
+                        quantidade: 0,
+                        lancado: false
+                    }))
+
+                    await FazerLancamento(TabelaReformulada)
+                    setLancamentosHoje(TabelaReformulada)
+
+                } finally {
+                    setLoading(false);
+                }
+
+
+
+
             } finally {
                 setLoading(false);
             }
+
         };
         fetchData();
     }, []);
+
+    const FiltrarProduto = (titulo: string) => {
+        const produto1 = LancamentoHoje?.filter(produto1 => produto1.titulo === titulo)
+
+        return produto1
+    }
 
 
 
@@ -120,9 +172,15 @@ export default function Lancamentos() {
                                         <Typography variant="h1" component="h1" fontWeight={700} style={{ fontSize: 15, fontWeight: 700 }}>{produto.titulo}</Typography>
                                     </Box>
                                     <Typography m={1}>Quantidade: {produto.quantidade}</Typography>
-                                    <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }} onClick={() => { handleOpen(); setProdutoEditando(produto) }}>
-                                        Lançar
-                                    </Button>
+                                    {LancamentoHoje && LancamentoHoje.find(item => item.titulo === produto.titulo)?.lancado === true ? (
+                                        <Button variant="contained" style={{ backgroundColor: 'orange', margin: 5 }} onClick={() => { handleOpen(); setProdutoEditando(produto) }}>
+                                            LANÇADO
+                                        </Button>
+                                    ) : (
+                                        <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }} onClick={() => { handleOpen(); setProdutoEditando(produto) }}>
+                                            Lançar
+                                        </Button>
+                                    )}
                                 </Box>
                             </>
                         ))}

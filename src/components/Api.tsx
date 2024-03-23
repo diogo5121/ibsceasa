@@ -182,7 +182,20 @@ export async function JogarPedido(loja: number, jsonData: string): Promise<Root3
 
         return response.data;
     } catch (error) {
-        console.error('Erro ao consultar produto:', error);
+        console.error('Erro ao lancar pedido:', error);
+        throw error;
+    }
+}
+
+export async function FazerLancamento(jsonData: Lancamento[]): Promise<Root3> {
+    try {
+        const response = await axios.post<Root3>('http://45.164.8.122:30492/api/banco/inserirlancamento', {
+            jsonData: jsonData,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao lancar lancamento:', error);
         throw error;
     }
 }
@@ -220,7 +233,41 @@ export async function ConsultarTabelaPedidos(tabela: string): Promise<Root4> {
     }
 }
 
-export async function MudarStatus(codigo: string){
+export interface Root5 {
+    success: boolean
+    message: Message5[]
+}
+
+export interface Message5 {
+    id: number
+    data: string
+    lancamento: Lancamento[]
+}
+
+export interface Lancamento {
+    custo: string
+    status: string
+    titulo: string
+    quantidade: number
+    lancado: boolean
+}
+
+export async function ConsultarTabelaLancamentos(tabela: string): Promise<Root5> {
+
+    try {
+        const response = await axios.post<Root5>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+
+
+export async function MudarStatus(codigo: string) {
 
     try {
         const response = await axios.post('http://45.164.8.122:30492/api/banco/statusproduto', {
