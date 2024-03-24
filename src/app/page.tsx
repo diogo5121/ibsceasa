@@ -18,16 +18,10 @@ import { ConsultarTabelaPedidos } from "@/components/Api";
 
 export default function Home() {
   const router = useRouter()
-  const [TevePedidoOntem, setTevePedidoOntem] = useState(false)
+  const Today = dayjs().day()
+
 
   useEffect(() => {
-    const fetcData = async () => {
-      const dataOntem = dayjs().subtract(2, 'day').format('DD-MM-YYYY')
-      const pedidos = await ConsultarTabelaPedidos('pedidos')
-      setTevePedidoOntem(pedidos?.message.filter(p => dayjs(p.data).format('DD-MM-YYYY') === dataOntem).length > 0)
-    };
-    fetcData()
-
   }, [])
 
   return (
@@ -44,8 +38,7 @@ export default function Home() {
         </Box>
 
         <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-
-          {!TevePedidoOntem && (
+          {(Today === 0 || Today === 2 || Today === 4) && (
             <>
               <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
@@ -65,11 +58,10 @@ export default function Home() {
               </Button>
             </>
           )}
-
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/relatorios')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                RELATORIOS DE PEDIDOS
+                RELATORIOS
               </Typography>
               <Notes />
             </Box>
@@ -82,27 +74,40 @@ export default function Home() {
               <BsBoxFill size={25} />
             </Box>
           </Button>
-          {TevePedidoOntem && (
-            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/lancamentos')}>
-              <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
-                <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                  Lançamento ceasa
-                </Typography>
-                <MdOutlineNoteAdd size={25} />
-              </Box>
-            </Button>
+
+          {(Today === 1 || Today === 3 || Today === 5) && (
+            <>
+              <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/lancamentos')}>
+                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                  <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                    Lançamento ceasa
+                  </Typography>
+                  <MdOutlineNoteAdd size={25} />
+                </Box>
+              </Button>
+              <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/lancamentos')}>
+                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                  <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                    Conferência
+                  </Typography>
+                  <MdOutlineNoteAdd size={25} />
+                </Box>
+              </Button>
+            </>
+
           )}
         </Grid>
-        {TevePedidoOntem ? (
-          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-            <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
-              Hoje não é dia de pedido
-            </Typography>
-          </Box>
-        ) : (
+        {(Today === 0 || Today === 2 || Today === 4) && (
           <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'green'}>
               Hoje é dia de pedido
+            </Typography>
+          </Box>
+        )}
+        {(Today === 1 || Today === 3 || Today === 5) && (
+          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
+              Hoje não é dia de pedido
             </Typography>
           </Box>
         )}
@@ -129,7 +134,7 @@ export default function Home() {
             </Box>
           </Button>
         </Grid>
-        
+
 
       </Box>
     </ProtectedRouts>
