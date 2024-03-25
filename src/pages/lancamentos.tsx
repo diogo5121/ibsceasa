@@ -72,7 +72,7 @@ export default function Lancamentos() {
             WebSocketExample(atualizar, setAtualizar)
             try {
                 setLoading(true);
-                const produtosceasa = await gerarTodasLojas(0);
+                const produtosceasa = await gerarTodasLojas(1);
                 const produtosPedidoFormulado = produtosceasa.filter(produto => produto.quantidade > 0)
                 setProdutosPedidos(produtosPedidoFormulado);
 
