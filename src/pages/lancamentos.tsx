@@ -8,19 +8,58 @@ import '@/app/globals.css'
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { gerarTodasLojas } from '@/utils/Relatorios';
+import { formatarValorMonetario } from '@/utils/ReformularValor';
+import { EnviarMsg, WebSocketExample } from '@/components/Soket';
 
 export default function Lancamentos() {
     const [loading, setLoading] = useState(true);
+    const [QuantidadeEditado, setQuantidadeEditado] = useState('0');
+    const [precoEditado, setprecoEditado] = useState('0');
+    const [error, setError] = useState('');
     const [produtosPedido, setProdutosPedidos] = useState<Json[]>();
     const [produtoEditando, setProdutoEditando] = useState<Json>();
     const [LancamentoHoje, setLancamentosHoje] = useState<Lancamento[]>();
     const [open, setOpen] = useState(false);
+    const [atualizar, setAtualizar] = useState(0);
+    const [aVistaSelecionado, setAVistaSelecionado] = useState(false);
+    const [aPrazoSelecionado, setAPrazoSelecionado] = useState(false);
+
+    const handleSelecionarPagamento = (tipoPagamento: 'avista' | 'aprazo') => {
+        if (tipoPagamento === 'avista') {
+            setAVistaSelecionado(true);
+            setAPrazoSelecionado(false);
+        }
+        else if (tipoPagamento === 'aprazo') {
+            setAVistaSelecionado(false);
+            setAPrazoSelecionado(true);
+        }
+    };
 
 
-    const handleOpen = () => {
-        console.log('aberto')
+    const handleOpen = (produtoo: Json) => {
         setOpen(true);
+        const lancamentoProduto = LancamentoHoje?.find(produto => produto.titulo === produtoo.titulo);
+    
+        if (lancamentoProduto && !lancamentoProduto.lancado) {
+            console.log('olaola');
+        } else if (lancamentoProduto) {
+            setprecoEditado(lancamentoProduto.total.toString());
+            setQuantidadeEditado(lancamentoProduto.quantidade.toString());
+            if(lancamentoProduto.pagamento === 'avista'){
+                setAVistaSelecionado(true);
+                setAPrazoSelecionado(false);
+            }
+            if(lancamentoProduto.pagamento === 'prazo'){
+                setAVistaSelecionado(false);
+                setAPrazoSelecionado(true);
+            }
+        } else {
+            // Se não houver lançamento para o produto editando, reinicialize os valores
+            setprecoEditado('0');
+            setQuantidadeEditado('0');
+        }
     }
+    
 
     const handleClose = () => {
         setOpen(false);
@@ -29,9 +68,11 @@ export default function Lancamentos() {
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log('aualizou')
+            WebSocketExample(atualizar, setAtualizar)
             try {
                 setLoading(true);
-                const produtosceasa = await gerarTodasLojas(2);
+                const produtosceasa = await gerarTodasLojas(0);
                 const produtosPedidoFormulado = produtosceasa.filter(produto => produto.quantidade > 0)
                 setProdutosPedidos(produtosPedidoFormulado);
 
@@ -56,7 +97,9 @@ export default function Lancamentos() {
                             status: fruta.status,
                             titulo: fruta.titulo,
                             quantidade: 0,
-                            lancado: false
+                            lancado: false,
+                            pagamento: '',
+                            total: 0
                         }))
 
                         await FazerLancamento(TabelaReformulada)
@@ -71,7 +114,9 @@ export default function Lancamentos() {
                         status: fruta.status,
                         titulo: fruta.titulo,
                         quantidade: 0,
-                        lancado: false
+                        lancado: false,
+                        pagamento: '',
+                        total: 0
                     }))
 
                     await FazerLancamento(TabelaReformulada)
@@ -80,25 +125,60 @@ export default function Lancamentos() {
                 } finally {
                     setLoading(false);
                 }
-
-
-
-
             } finally {
                 setLoading(false);
             }
-
         };
         fetchData();
-    }, []);
+        handleClose();
+    }, [atualizar]);
 
-    const FiltrarProduto = (titulo: string) => {
-        const produto1 = LancamentoHoje?.filter(produto1 => produto1.titulo === titulo)
+    const FazerLancamentoNoBanco = async () => {
+        console.log('FazerLancamento');
+        const index: number = LancamentoHoje?.findIndex(lancamento => lancamento.titulo === produtoEditando?.titulo) ?? -1;
 
-        return produto1
-    }
+        if (aVistaSelecionado === false && aPrazoSelecionado === false) {
+            setError('Não foi selecionado o tipo de pagamento')
+            console.log('Não foi selecionado o tipo de pag')
+        } else {
+
+            if (index !== -1 && produtoEditando) {
+                const novoLancamentoHoje = [...(LancamentoHoje || [])];
+
+                novoLancamentoHoje[index] = {
+                    ...novoLancamentoHoje[index],
+                    lancado: true,
+                    pagamento: aVistaSelecionado ? 'avista' : 'aprazo',
+                    quantidade: parseInt(QuantidadeEditado),
+                    custo: CalcularTotal(),
+                    total: parseFloat(precoEditado)
+                };
+
+                console.log(novoLancamentoHoje)
+                await FazerLancamento(novoLancamentoHoje)
+                EnviarMsg();
+                handleClose();
+            } else {
+                console.error('Produto não encontrado no array JSON.');
+            }
+        }
 
 
+
+    };
+
+    const CalcularTotal = () => {
+        const quantidade = parseFloat(QuantidadeEditado)
+        const preco = parseFloat(precoEditado)
+
+        const total = preco / quantidade
+
+        return formatarValorMonetario(total.toFixed(2).toString())
+    };
+
+    const removeZerosEsquerda = (value: string) => {
+        return value.replace(/^0+/, '') || '0';
+    };
 
     return (
         <ProtectedRouts>
@@ -133,27 +213,34 @@ export default function Lancamentos() {
                                     <Typography fontSize={30} color={'green'} fontWeight={700}>{produtoEditando.quantidade}</Typography>
                                 </Box>
                                 <Box style={{ width: 320, height: 250, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} flexDirection={'column'} border={1} borderColor={'gray'}>
-                                    <TextField id="outlined-basic" label="Quantidade" variant="outlined" style={{ backgroundColor: 'white', margin: 5 }} type="number" />
-                                    <TextField id="outlined-basic" label="Valor Total" variant="outlined" style={{ backgroundColor: 'white', margin: 5 }} type="number" />
+
+                                    <TextField id="outlined-basic" label="Quantidade" variant="outlined" value={QuantidadeEditado} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => setQuantidadeEditado(removeZerosEsquerda(e.target.value))} />
+                                    <TextField id="outlined-basic" label="Valor Total" variant="outlined" value={precoEditado} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => setprecoEditado(removeZerosEsquerda(e.target.value))} />
                                     <Box display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
                                         <Box display={'flex'} flexDirection={'column'}>
                                             <FormGroup>
-                                                <FormControlLabel control={<Checkbox />} label="A vista" />
-                                                <FormControlLabel control={<Checkbox />} label="A prazo" />
+                                                <FormControlLabel
+                                                    control={<Checkbox checked={aVistaSelecionado} onChange={() => handleSelecionarPagamento('avista')} />}
+                                                    label="A vista"
+                                                />
+                                                <FormControlLabel
+                                                    control={<Checkbox checked={aPrazoSelecionado} onChange={() => handleSelecionarPagamento('aprazo')} />}
+                                                    label="A prazo"
+                                                />
                                             </FormGroup>
                                         </Box>
                                         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                             <Typography m={1} textAlign={'center'}>Custo Un:</Typography>
-                                            <Typography fontSize={20} color={'green'} fontWeight={700}>R$</Typography>
+                                            <Typography fontSize={20} color={'green'} fontWeight={700}>{CalcularTotal()}</Typography>
                                         </Box>
                                     </Box>
                                 </Box>
                             </Box>
-
+                            <Typography textAlign={'center'} color={'red'}>{error}</Typography>
                             <Button variant="contained" style={{ backgroundColor: 'red', margin: 5 }} onClick={() => handleClose()}>
                                 Sair
                             </Button>
-                            <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }}>
+                            <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }} onClick={() => FazerLancamentoNoBanco()}>
                                 Salvar
                             </Button>
 
@@ -173,11 +260,11 @@ export default function Lancamentos() {
                                     </Box>
                                     <Typography m={1}>Quantidade: {produto.quantidade}</Typography>
                                     {LancamentoHoje && LancamentoHoje.find(item => item.titulo === produto.titulo)?.lancado === true ? (
-                                        <Button variant="contained" style={{ backgroundColor: 'orange', margin: 5 }} onClick={() => { handleOpen(); setProdutoEditando(produto) }}>
+                                        <Button variant="contained" style={{ backgroundColor: 'orange', margin: 5 }} onClick={() => {setProdutoEditando(produto);  setError(''); handleOpen(produto);}}>
                                             LANÇADO
                                         </Button>
                                     ) : (
-                                        <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }} onClick={() => { handleOpen(); setProdutoEditando(produto) }}>
+                                        <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }} onClick={() => {setProdutoEditando(produto); setQuantidadeEditado('0'); setprecoEditado('0'); setAPrazoSelecionado(false); setAVistaSelecionado(false); setError(''); handleOpen(produto); }}>
                                             Lançar
                                         </Button>
                                     )}

@@ -75,7 +75,7 @@ export default function Home() {
             </Box>
           </Button>
 
-          {(Today === 1 || Today === 3 || Today === 5) && (
+          {(Today === 0 || Today === 3 || Today === 5) && (
             <>
               <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/lancamentos')}>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
@@ -85,7 +85,7 @@ export default function Home() {
                   <MdOutlineNoteAdd size={25} />
                 </Box>
               </Button>
-              <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/lancamentos')}>
+              <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/conferencia')}>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                   <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                     Conferência
@@ -104,7 +104,7 @@ export default function Home() {
             </Typography>
           </Box>
         )}
-        {(Today === 1 || Today === 3 || Today === 5) && (
+        {(Today === 1 || Today === 3 || Today === 5 || Today === 6) && (
           <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
               Hoje não é dia de pedido

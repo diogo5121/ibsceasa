@@ -250,6 +250,8 @@ export interface Lancamento {
     titulo: string
     quantidade: number
     lancado: boolean
+    pagamento: string
+    total: number
 }
 
 export async function ConsultarTabelaLancamentos(tabela: string): Promise<Root5> {
