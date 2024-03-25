@@ -1,10 +1,11 @@
 'use client'
-import { ConsultarTabelaPedidos, Json, Message4 } from "@/components/Api";
+import { ConsultarTabelaPedidos, Json, Lancamento, Message4, Message5 } from "@/components/Api";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
+import { formatarValorMonetario } from "./ReformularValor";
 
 
-const tamanhoFonte = 9; // Defina o tamanho da fonte
+const tamanhoFonte = 9;
 
 export function gerarRelatorioPDF(produtos: Message4[], numeroLoja: number): void {
     // Cria um novo documento PDF
@@ -64,7 +65,6 @@ export function gerarRelatorioPDF(produtos: Message4[], numeroLoja: number): voi
     // Exibe mensagem no console para verificar se a função foi chamada
     console.log('Relatório PDF gerado');
 }
-
 export async function gerarRelatorioPDFTodas() {
     const pedidos = await ConsultarTabelaPedidos('pedidos');
     const dataHoje = dayjs().format('YYYY-MM-DD');
@@ -163,8 +163,7 @@ export async function gerarRelatorioPDFTodas() {
     // Exibe mensagem no console para verificar se a função foi chamada
     console.log('Relatório PDF gerado');
 }
-
-export async function gerarTodasLojas(days : number) {
+export async function gerarTodasLojas(days: number) {
     const pedidos = await ConsultarTabelaPedidos('pedidos');
     const dataHoje = dayjs().subtract(days, 'days').format('YYYY-MM-DD');
     const pedidosHoje = pedidos?.message.filter(pedido => {
@@ -204,7 +203,46 @@ export async function gerarTodasLojas(days : number) {
     }
     return jsonGeral;
 }
+export async function gerarTodasLojasAtualizado(days: number, DiaHoje: string) {
+    const pedidos = await ConsultarTabelaPedidos('pedidos');
+    const dataHoje = dayjs().subtract(days, 'days').format('YYYY-MM-DD');
+    const pedidosHoje = pedidos?.message.filter(pedido => {
+        return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
+    });
 
+    function combinarItens(jsonList: Json[]): Json[] {
+        const combinedDict: { [key: string]: Json } = {};
+
+        for (const item of jsonList) {
+            const key = `${item.titulo}-${item.custo}`;
+
+            if (key in combinedDict) {
+                combinedDict[key].quantidade += item.quantidade;
+            } else {
+                combinedDict[key] = item;
+            }
+        }
+        return Object.values(combinedDict);
+    }
+
+    const todasAsLojas: Json[] = [];
+    for (const pedido of pedidosHoje) {
+        todasAsLojas.push(...pedido.json);
+    }
+
+    const itensCombinados: Json[] = combinarItens(todasAsLojas);
+
+    const jsonGeral: Json[] = [];
+    for (const item of itensCombinados) {
+        jsonGeral.push({
+            custo: item.custo,
+            status: item.status,
+            titulo: item.titulo,
+            quantidade: item.quantidade
+        });
+    }
+    return jsonGeral;
+}
 export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
     const pedidos = await ConsultarTabelaPedidos('pedidos');
     const dataHoje = dayjs().format('YYYY-MM-DD');
@@ -328,4 +366,145 @@ export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
 
 
     doc.save(`pedido_loja_todas_lojas_${dataHoje}.pdf`);
+}
+export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: string) {
+    const pedidosontem = await gerarTodasLojasAtualizado(1, day)
+
+    console.log(pedidosontem)
+    console.log(lancamento)
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text(`LANÇAMENTO CEASA - IBS - ${day}`, 10, 20);
+
+    // Define a posição inicial da tabela
+    let y = 30;
+    // Define o tamanho da fonte para esta página
+    doc.setFontSize(tamanhoFonte);
+    let soma = 0;
+    let avista = 0;
+    let aprazo = 0;
+    let ContaProdutos = 0;
+    let numeroPorPagina = 60;
+    doc.text('Descrição', 10, y);
+    doc.text('Quantidade pedida', 76, y);
+    doc.text('Quantidade comprada'.toString(), 105, y);
+    doc.text('Custo', 145, y);
+    doc.text('Pagamento', 160, y);
+    doc.text('Subtotal', 180, y);
+
+    doc.setLineWidth(0.5); // Define a largura da linha
+    doc.line(10, y + 1, 200, y + 1);
+    y += 4;
+    // Itera sobre os produtos para esta página
+    lancamento.map(produto => {
+        if (ContaProdutos === numeroPorPagina) {
+            doc.addPage()
+            doc.setFontSize(18);
+            doc.text(`LANÇAMENTO CEASA - IBS - ${day}`, 10, 20);
+            doc.setFontSize(tamanhoFonte);
+            y = 30;
+            numeroPorPagina += 60
+        }
+        const subtotal = produto.total;
+        const produtoPedido = pedidosontem.find(p => p.titulo === produto.titulo);
+
+        doc.text(produto.titulo, 10, y);
+        doc.text(produtoPedido ? produtoPedido.quantidade.toString() : '-', 76, y);
+        doc.text(produto.quantidade.toString(), 105, y);
+        if (produto.custo === 'Valor inválido') {
+            doc.text("R$ -", 145, y);
+            doc.text('-', 160, y);
+
+        } else {
+            doc.text(produto.custo, 145, y);
+            doc.text(produto.pagamento, 160, y);
+
+        }
+        if (produto.pagamento === 'avista') {
+            avista += subtotal
+        } else {
+            aprazo += subtotal
+        }
+
+        doc.text(formatarValorMonetario(produto.total.toString()), 180, y);
+
+        soma += subtotal;
+        ContaProdutos += 1;
+        y += 4;
+    })
+
+    doc.setLineWidth(0.5);
+    doc.line(10, y + 5, 200, y + 5);
+    doc.text('Total do pedido:', 10, y + 10);
+    doc.text(formatarValorMonetario(soma.toString()), 180, y + 10);
+    y += 5;
+    doc.text('Total a vista: ' + formatarValorMonetario(avista.toString()), 10, y + 10);
+    y += 4;
+    doc.text('Total a prazo: ' + formatarValorMonetario(aprazo.toString()), 10, y + 10);
+
+
+    doc.save(`lancamento_ibs_${day}.pdf`);
+
+    console.log('Relatório PDF gerado');
+}
+
+export async function gerarRelatorioConferencia(conferenciaa: Message5[], numeroLoja: number, days: string) {
+    // Cria um novo documento PDF
+    const doc = new jsPDF();
+    const ontem = dayjs(days).subtract(1, 'days').format('DD-MM-YYYY')
+    const hoje = dayjs().format('DD-MM-YYYY')
+    const pedidos = await ConsultarTabelaPedidos('pedidos')
+
+    const pedidosOntem = pedidos?.message.filter(pedido => {
+        return dayjs(pedido.data).format('DD-MM-YYYY') === ontem;
+    });
+
+    const pedidosLoja = pedidosOntem?.filter(pedido => {
+        return pedido.loja === numeroLoja;
+    });
+
+    const PedidoLojaInicial = pedidosLoja[0].json.filter(produto => produto.quantidade != 0)
+
+    doc.setFontSize(18);
+    doc.text(`CONFERENCIA CEASA - LOJA ${numeroLoja} - ${days}`, 10, 20);
+
+    // Define a posição inicial da tabela
+    let y = 30;
+    // Define o tamanho da fonte para esta página
+    doc.setFontSize(tamanhoFonte);
+    let ContaProdutos = 0;
+    let numeroPorPagina = 60;
+    doc.text('Descrição', 10, y);
+    doc.text('Pedida', 160, y);
+    doc.text('Conferencia'.toString(), 180, y);
+
+    doc.setLineWidth(0.5); // Define a largura da linha
+    doc.line(10, y + 1, 200, y + 1);
+    y += 4;
+    // Itera sobre os produtos para esta página
+    PedidoLojaInicial.map(produto => {
+        if (ContaProdutos === numeroPorPagina) {
+            doc.addPage()
+            doc.setFontSize(18);
+            doc.text(`CONFERENCIA CEASA - LOJA ${numeroLoja} - ${days}`, 10, 20);
+            doc.setFontSize(tamanhoFonte);
+            y = 30;
+            numeroPorPagina += 60
+        }
+        const QuantidadeConferida = conferenciaa[0].conferencia.find(c => c.titulo === produto.titulo)
+        const quantidade = QuantidadeConferida ? QuantidadeConferida.quantidade.toString() : '';
+        doc.text(produto.titulo, 10, y);
+        doc.text(produto.quantidade.toString(), 160, y);
+        doc.text(quantidade, 180, y);
+
+        ContaProdutos += 1;
+        y += 4;
+    })
+    doc.setLineWidth(0.5);
+    doc.line(10, y + 5, 200, y + 5);
+    doc.save(`conferencia_loja_${numeroLoja}_${days}.pdf`);
+
+    console.log('Relatório PDF gerado');
 }

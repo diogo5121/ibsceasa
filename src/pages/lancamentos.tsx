@@ -45,11 +45,12 @@ export default function Lancamentos() {
         } else if (lancamentoProduto) {
             setprecoEditado(lancamentoProduto.total.toString());
             setQuantidadeEditado(lancamentoProduto.quantidade.toString());
+            console.log(lancamentoProduto)
             if(lancamentoProduto.pagamento === 'avista'){
                 setAVistaSelecionado(true);
                 setAPrazoSelecionado(false);
             }
-            if(lancamentoProduto.pagamento === 'prazo'){
+            if(lancamentoProduto.pagamento === 'aprazo'){
                 setAVistaSelecionado(false);
                 setAPrazoSelecionado(true);
             }

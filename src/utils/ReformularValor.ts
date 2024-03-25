@@ -2,7 +2,7 @@ export function formatarValorMonetario(valor: string): string {
     const numero = parseFloat(valor.replace(',', '.')); 
 
     if (isNaN(numero)) {
-        return 'Valor inválido';
+        return 'R$ 0,00';
     }
 
     const formatoBrasileiro = new Intl.NumberFormat('pt-BR', {

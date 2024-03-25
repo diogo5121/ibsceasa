@@ -170,12 +170,37 @@ export async function ConsultarTabelaCeasa(tabela: string): Promise<Root3> {
     }
 }
 
+export interface Root6 {
+    success: boolean
+    message: string
+}
 
 
 export async function JogarPedido(loja: number, jsonData: string): Promise<Root3> {
 
     try {
         const response = await axios.post<Root3>('http://45.164.8.122:30492/api/banco/inserirpedido', {
+            loja: loja,
+            jsonData: jsonData,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao lancar pedido:', error);
+        throw error;
+    }
+}
+
+export interface conferencia {
+    titulo: string
+    quantidade: number
+}
+
+
+export async function InserirConferencia(loja: number, jsonData: conferencia[]): Promise<Root6> {
+
+    try {
+        const response = await axios.post<Root6>('http://45.164.8.122:30492/api/banco/inserirconferencia', {
             loja: loja,
             jsonData: jsonData,
         });
@@ -258,6 +283,38 @@ export async function ConsultarTabelaLancamentos(tabela: string): Promise<Root5>
 
     try {
         const response = await axios.post<Root5>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+
+export interface Root7 {
+    success: boolean
+    message: Message5[]
+  }
+  
+  export interface Message5 {
+    id: number
+    data: string
+    loja: number
+    conferencia: Conferencum[]
+  }
+  
+  export interface Conferencum {
+    titulo: string
+    quantidade: number
+  }
+  
+
+export async function ConsultarTabelaConferencia(tabela: string): Promise<Root7> {
+
+    try {
+        const response = await axios.post<Root7>('http://45.164.8.122:30492/api/banco/consulta', {
             tabela: tabela,
         });
 

@@ -12,7 +12,6 @@ import { BsBox, BsBox2, BsBoxFill } from "react-icons/bs";
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { ConsultarTabelaPedidos } from "@/components/Api";
 
 
 
