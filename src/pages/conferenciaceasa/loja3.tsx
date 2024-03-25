@@ -101,7 +101,7 @@ export default function Loja3() {
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography variant='body1' component="h1" textAlign={'center'} color={'red'} m={2} fontWeight={500}>
-                            CONFIRA TODOS OS PRODUTOS, SE NÃO RECEBEU NENHUMA QUANTIDADE DIGITE "0"
+                            CONFIRA TODOS OS PRODUTOS, SE NAO RECEBEU NENHUMA QUANTIDADE DIGITE 0
                         </Typography>
                     </Box>
                 </Box>
