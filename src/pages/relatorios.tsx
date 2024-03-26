@@ -9,7 +9,7 @@ import NavBarPages from "@/components/NavBarPages";
 import { useEffect, useState } from "react";
 import { ConsultarTabelaConferencia, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, Lancamento, Root4, Root7 } from "@/components/Api";
 import dayjs from "dayjs";
-import { gerarRelatorioConferencia, gerarRelatorioLancamento, gerarRelatorioPDF, gerarRelatorioPDFDEL, gerarRelatorioPDFTodas } from "@/utils/Relatorios";
+import { gerarRelatorioConferencia, gerarRelatorioConferenciaGeral, gerarRelatorioLancamento, gerarRelatorioPDF, gerarRelatorioPDFDEL, gerarRelatorioPDFTodas } from "@/utils/Relatorios";
 import { FaExplosion } from "react-icons/fa6";
 import { BiGlasses } from "react-icons/bi";
 
@@ -151,6 +151,16 @@ export default function Home() {
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Loja 7
+                                    </Typography>
+                                    <AssessmentIcon />
+                                </Box>
+                            </Button>
+                        )}
+                        {conferenciaHoje?.length === 5 && (
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferenciaGeral(conferenciaHoje, dataHoje)}}>
+                                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                                    <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                        Conferencia Geral
                                     </Typography>
                                     <AssessmentIcon />
                                 </Box>

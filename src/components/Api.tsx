@@ -277,6 +277,7 @@ export interface Lancamento {
     lancado: boolean
     pagamento: string
     total: number
+    fornecedor: string
 }
 
 export async function ConsultarTabelaLancamentos(tabela: string): Promise<Root5> {
@@ -292,24 +293,47 @@ export async function ConsultarTabelaLancamentos(tabela: string): Promise<Root5>
         throw error;
     }
 }
+export interface Root10 {
+    success: boolean
+    message: Message10[]
+}
+
+export interface Message10 {
+    id: number
+    nome: string
+    tipo: string
+}
+export async function ConsultarTabelaFornecedor(tabela: string): Promise<Root10> {
+
+    try {
+        const response = await axios.post<Root10>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
 
 export interface Root7 {
     success: boolean
     message: Message5[]
-  }
-  
-  export interface Message5 {
+}
+
+export interface Message5 {
     id: number
     data: string
     loja: number
     conferencia: Conferencum[]
-  }
-  
-  export interface Conferencum {
+}
+
+export interface Conferencum {
     titulo: string
     quantidade: number
-  }
-  
+}
+
 
 export async function ConsultarTabelaConferencia(tabela: string): Promise<Root7> {
 

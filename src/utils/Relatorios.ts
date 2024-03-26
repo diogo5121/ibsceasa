@@ -1,5 +1,5 @@
 'use client'
-import { ConsultarTabelaPedidos, Json, Lancamento, Message4, Message5 } from "@/components/Api";
+import { Conferencum, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, Json, Lancamento, Message4, Message5 } from "@/components/Api";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
 import { formatarValorMonetario } from "./ReformularValor";
@@ -205,7 +205,7 @@ export async function gerarTodasLojas(days: number) {
 }
 export async function gerarTodasLojasAtualizado(days: number, DiaHoje: string) {
     const pedidos = await ConsultarTabelaPedidos('pedidos');
-    const dataHoje = dayjs().subtract(days, 'days').format('YYYY-MM-DD');
+    const dataHoje = dayjs(DiaHoje).subtract(days, 'days').format('YYYY-MM-DD');
     const pedidosHoje = pedidos?.message.filter(pedido => {
         return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
     });
@@ -449,9 +449,7 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
 
     console.log('Relatório PDF gerado');
 }
-
 export async function gerarRelatorioConferencia(conferenciaa: Message5[], numeroLoja: number, days: string) {
-    // Cria um novo documento PDF
     const doc = new jsPDF();
     const ontem = dayjs(days).subtract(1, 'days').format('DD-MM-YYYY')
     const hoje = dayjs().format('DD-MM-YYYY')
@@ -505,6 +503,101 @@ export async function gerarRelatorioConferencia(conferenciaa: Message5[], numero
     doc.setLineWidth(0.5);
     doc.line(10, y + 5, 200, y + 5);
     doc.save(`conferencia_loja_${numeroLoja}_${days}.pdf`);
+
+    console.log('Relatório PDF gerado');
+}
+export async function gerarRelatorioConferenciaGeral(conferenciaa: Message5[], days: string) {
+    console.log(conferenciaa)
+
+    function combinarItens(jsonList: Conferencum[]): Conferencum[] {
+        const combinedDict: { [key: string]: Conferencum } = {};
+
+        for (const item of jsonList) {
+            const key = `${item.titulo}`;
+
+            if (key in combinedDict) {
+                combinedDict[key].quantidade += item.quantidade;
+            } else {
+                combinedDict[key] = item;
+            }
+        }
+        return Object.values(combinedDict);
+    }
+
+    const todasAsLojas: Conferencum[] = [];
+    for (const pedido of conferenciaa) {
+        todasAsLojas.push(...pedido.conferencia);
+    }
+
+    const itensCombinados: Conferencum[] = combinarItens(todasAsLojas);
+
+    const jsonGeral: Conferencum[] = [];
+    for (const item of itensCombinados) {
+        jsonGeral.push({
+            titulo: item.titulo,
+            quantidade: item.quantidade
+        });
+    }
+
+    const todasAsLojass = await gerarTodasLojasAtualizado(1, days)
+    console.log(jsonGeral)
+    console.log(todasAsLojass.filter(item => item.quantidade != 0))
+
+    const Lancamentos = await ConsultarTabelaLancamentos('lancamento')
+
+    const lancamentosAtual = Lancamentos?.message.filter(pedido => {
+        return dayjs(pedido.data).format('YYYY-MM-DD') === days;
+
+    });
+
+
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text(`CONFERENCIA CEASA GERAL - ${days}`, 10, 20);
+
+
+    // Define a posição inicial da tabela
+    let y = 30;
+    // Define o tamanho da fonte para esta página
+    doc.setFontSize(tamanhoFonte);
+    let ContaProdutos = 0;
+    let numeroPorPagina = 60;
+    doc.text('Descrição', 10, y);
+    doc.text('Pedida', 140, y);
+    doc.text('Comprada', 160, y);
+    doc.text('Conferencia'.toString(), 180, y);
+
+    doc.setLineWidth(0.5); // Define a largura da linha
+    doc.line(10, y + 1, 200, y + 1);
+    y += 4;
+    jsonGeral.map(produto => {
+        if (ContaProdutos === numeroPorPagina) {
+            doc.addPage()
+            doc.setFontSize(18);
+            doc.text(`CONFERENCIA CEASA GERAL - ${days}`, 10, 20);
+            doc.setFontSize(tamanhoFonte);
+            y = 30;
+            numeroPorPagina += 60
+        }
+        const QuantidadeConferida = todasAsLojass.find(c => c.titulo.trim() === produto.titulo.trim())?.quantidade;
+        const QuantidadeLançada = lancamentosAtual && lancamentosAtual.length > 0 && lancamentosAtual[0].lancamento ?
+            lancamentosAtual[0].lancamento.find(produtoo => produtoo.titulo === produto.titulo) : undefined;
+        const quantidade = QuantidadeLançada ? QuantidadeLançada.quantidade.toString() : '';
+
+
+        doc.text(produto.titulo, 10, y);
+        doc.text(QuantidadeConferida?.toString() || 'Quantidade não disponível', 140, y);
+        doc.text(quantidade, 160, y);
+        doc.text(produto.quantidade.toString(), 180, y);
+
+        ContaProdutos += 1;
+        y += 4;
+    })
+    doc.setLineWidth(0.5);
+    doc.line(10, y + 5, 200, y + 5);
+    doc.save(`conferencia_geral_${days}.pdf`);
 
     console.log('Relatório PDF gerado');
 }
