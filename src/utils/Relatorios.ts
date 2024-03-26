@@ -282,12 +282,16 @@ export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
             quantidade: item.quantidade
         });
     }
-    pedidossss.sort((a, b) => a.loja - b.loja);
-    const Pedidoloja1 = pedidossss[0].json ?? []
-    const Pedidoloja2 = pedidossss[1].json ?? []
-    const Pedidoloja3 = pedidossss[2].json ?? []
-    const Pedidoloja4 = pedidossss[3].json ?? []
-    const Pedidoloja5 = pedidossss[4].json ?? []
+
+    const lojasOrganizadas = pedidossss.sort((a, b) => a.loja - b.loja);
+
+    const Pedidoloja1 = lojasOrganizadas[0].json ?? []
+    const Pedidoloja2 = lojasOrganizadas[1].json ?? []
+    const Pedidoloja3 = lojasOrganizadas[2].json ?? []
+    const Pedidoloja4 = lojasOrganizadas[3].json ?? []
+    const Pedidoloja5 = lojasOrganizadas[4].json ?? []
+
+    console.log(lojasOrganizadas)
 
     const doc = new jsPDF('landscape');
     let y = 10;
@@ -337,20 +341,21 @@ export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
                 numeroPorPagina += 20
                 y += 10;
             }
-            const quantidadeLoja1 = Pedidoloja1.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
-            const quantidadeLoja2 = Pedidoloja2.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
-            const quantidadeLoja3 = Pedidoloja3.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
-            const quantidadeLoja4 = Pedidoloja4.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
-            const quantidadeLoja5 = Pedidoloja5.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0].quantidade
+            const quantidadeLoja1 = Pedidoloja1.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0]?.quantidade
+            console.log(Pedidoloja2.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0]?.quantidade)
+            const quantidadeLoja2 = Pedidoloja2.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0]?.quantidade
+            const quantidadeLoja3 = Pedidoloja3.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0]?.quantidade
+            const quantidadeLoja4 = Pedidoloja4.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0]?.quantidade
+            const quantidadeLoja5 = Pedidoloja5.filter(pedidoo => pedidoo.titulo === pedido.titulo)[0]?.quantidade
 
             y += 1;
             doc.text(pedido.titulo, 20, y);
             doc.setFontSize(14);
-            doc.text(quantidadeLoja1.toString(), 80, y);
-            doc.text(quantidadeLoja2.toString(), 105, y);
-            doc.text(quantidadeLoja3.toString(), 130, y);
-            doc.text(quantidadeLoja4.toString(), 155, y);
-            doc.text(quantidadeLoja5.toString(), 180, y);
+            doc.text(quantidadeLoja1 ? quantidadeLoja1.toString() : '-', 80, y);
+            doc.text(quantidadeLoja2 ? quantidadeLoja2.toString() : '-', 105, y);
+            doc.text(quantidadeLoja3 ? quantidadeLoja3.toString() : '-', 130, y);
+            doc.text(quantidadeLoja4 ? quantidadeLoja4.toString() : '-', 155, y);
+            doc.text(quantidadeLoja5 ? quantidadeLoja5.toString() : '-', 180, y);
             doc.text(pedido.quantidade.toString(), 210, y);
             doc.line(20, y + 2, 290, y + 2);
             doc.setFontSize(10);
