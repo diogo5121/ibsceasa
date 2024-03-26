@@ -1,5 +1,5 @@
 'use client'
-import { Conferencum, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, Json, Lancamento, Message4, Message5 } from "@/components/Api";
+import { Conferencum, ConsultarTabelaFinanceiro, ConsultarTabelaFornecedor, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, Json, Lancamento, Message4, Message5 } from "@/components/Api";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
 import { formatarValorMonetario } from "./ReformularValor";
@@ -369,9 +369,14 @@ export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
 }
 export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: string) {
     const pedidosontem = await gerarTodasLojasAtualizado(1, day)
+    const fornecedores = await ConsultarTabelaFornecedor('fornecedor')
+    const financeiro = await ConsultarTabelaFinanceiro('financeiro')
+    const hoje = dayjs(day).format('DD-MM-YYYY')
 
-    console.log(pedidosontem)
-    console.log(lancamento)
+    const financeirohoje = financeiro?.message.filter(pedido => {
+        return dayjs(pedido.data).format('DD-MM-YYYY') === hoje;
+    });
+    console.log(financeirohoje);
 
     const doc = new jsPDF();
 
@@ -398,6 +403,17 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
     doc.line(10, y + 1, 200, y + 1);
     y += 4;
     // Itera sobre os produtos para esta página
+    interface Fornecedor {
+        nome: string;
+        valorInicial: number;
+    }
+    let resultadoss: Fornecedor[] = fornecedores.message.map(fornec => {
+        return {
+            nome: fornec.nome,
+            valorInicial: 0
+        }
+    })
+
     lancamento.map(produto => {
         if (ContaProdutos === numeroPorPagina) {
             doc.addPage()
@@ -425,6 +441,11 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
         if (produto.pagamento === 'avista') {
             avista += subtotal
         } else {
+            resultadoss.map(result => {
+                if(result.nome === produto.fornecedor){
+                    result.valorInicial += subtotal
+                }
+            })
             aprazo += subtotal
         }
 
@@ -443,10 +464,81 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
     doc.text('Total a vista: ' + formatarValorMonetario(avista.toString()), 10, y + 10);
     y += 4;
     doc.text('Total a prazo: ' + formatarValorMonetario(aprazo.toString()), 10, y + 10);
+    doc.addPage()
+    doc.setFontSize(18);
+    doc.text(`FINANCEIRO CEASA - IBS - ${day}`, 10, 20);
 
+
+    y = 30;
+
+    doc.setLineWidth(0.5);
+    doc.line(10, y, 200, y);
+    y += 5;
+
+    doc.setFontSize(tamanhoFonte);
+    doc.text('Valor inicial (DINHEIRO):', 10, y);
+    doc.text(formatarValorMonetario(financeirohoje[0].json.valorInicial), 55, y);
+    y += 5;
+    doc.text('Compras a vista: ', 10, y);
+    doc.text("-" + formatarValorMonetario(avista.toString()), 55, y);
+    y += 5;
+    doc.text('Lanche: ', 10, y);
+    doc.text("-" + formatarValorMonetario(financeirohoje[0].json.lanche), 55, y);
+    y += 5;
+    doc.text('Combustivel: ', 10, y);
+    doc.text("-" + formatarValorMonetario(financeirohoje[0].json.combustivel), 55, y);
+    y += 5;
+    doc.text('Outros 1: ', 10, y);
+    doc.text("-" + formatarValorMonetario(financeirohoje[0].json.outros1), 55, y);
+    doc.text(financeirohoje[0].json.descrcaoOutros1, 80, y);
+    y += 5;
+    doc.text('Outros 2: ', 10, y);
+    doc.text("-" + formatarValorMonetario(financeirohoje[0].json.outros2), 55, y);
+    doc.text(financeirohoje[0].json.descrcaoOutros2, 80, y);
+    y += 5;
+    doc.text('Outros 3: ', 10, y);
+    doc.text("-" + formatarValorMonetario(financeirohoje[0].json.outros3), 55, y);
+    doc.text(financeirohoje[0].json.descrcaoOutros3, 80, y);
+    y += 1;
+    doc.setLineWidth(0.5);
+    doc.line(10, y, 100, y);
+    y += 5;
+    doc.text('Resultado: ', 10, y);
+    const Resultado = parseFloat(financeirohoje[0].json.valorInicial) - avista - parseFloat(financeirohoje[0].json.lanche) - parseFloat(financeirohoje[0].json.combustivel) - parseFloat(financeirohoje[0].json.outros1) - parseFloat(financeirohoje[0].json.outros2) - parseFloat(financeirohoje[0].json.outros3)
+    doc.text(" " + formatarValorMonetario(Resultado.toString()), 55, y);
+    y += 5;
+    doc.text('Troco: ', 10, y);
+    doc.text("-" + formatarValorMonetario(financeirohoje[0].json.troco), 55, y);
+    y += 1;
+    doc.setLineWidth(0.5);
+    doc.line(10, y, 100, y);
+    y += 5;
+    const ResultadoFinal = Resultado - parseFloat(financeirohoje[0].json.troco)
+    doc.text('Resultado Final: ', 10, y);
+    doc.text(" " + formatarValorMonetario(ResultadoFinal.toString()), 55, y);
+    y += 10;
+
+    doc.setFontSize(13);
+    doc.text(`COMPRAS A PRAZO - IBS - ${day}`, 10, y);
+    y += 1;
+    doc.setLineWidth(0.5);
+    doc.line(10, y, 200, y);
+    let somaFornecedores = 0
+    doc.setFontSize(tamanhoFonte);
+    resultadoss.map(result => {
+        y += 5;
+        doc.text(result.nome, 10, y);
+        doc.text(formatarValorMonetario(result.valorInicial.toString()), 55, y);
+        somaFornecedores += result.valorInicial
+    })
+    y += 1;
+    doc.setLineWidth(0.5);
+    doc.line(10, y, 200, y)
+    y += 5;
+    doc.text('Total a prazo:: ', 10, y);
+    doc.text(" " + formatarValorMonetario(somaFornecedores.toString()), 55, y);
 
     doc.save(`lancamento_ibs_${day}.pdf`);
-
     console.log('Relatório PDF gerado');
 }
 export async function gerarRelatorioConferencia(conferenciaa: Message5[], numeroLoja: number, days: string) {

@@ -3,13 +3,14 @@ import Head from 'next/head';
 import ProtectedRouts from "@/components/ProtectedRoutes";
 import { Box, Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, IconButton, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import NavBarPages from '@/components/NavBarPages';
-import { ConsultarProduto, ConsultarTabelaCeasa, ConsultarTabelaFornecedor, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, FazerLancamento, JogarPedido, Json, Lancamento, Message10, Root3 } from '@/components/Api';
+import { ConsultarProduto, ConsultarTabelaCeasa, ConsultarTabelaFinanceiro, ConsultarTabelaFornecedor, ConsultarTabelaLancamentos, ConsultarTabelaPedidos, FazerLancamento, InserirFinanceiro, JogarPedido, Json, Json11, Lancamento, Message10, Root3 } from '@/components/Api';
 import '@/app/globals.css'
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { gerarTodasLojas } from '@/utils/Relatorios';
 import { formatarValorMonetario } from '@/utils/ReformularValor';
 import { EnviarMsg, WebSocketExample } from '@/components/Soket';
+import { RxValue } from 'react-icons/rx';
 
 export default function Lancamentos() {
     const [loading, setLoading] = useState(true);
@@ -23,6 +24,16 @@ export default function Lancamentos() {
     const [LancamentoHoje, setLancamentosHoje] = useState<Lancamento[]>();
     const [open, setOpen] = useState(false);
     const [atualizar, setAtualizar] = useState(0);
+    const [valorInicial, setValorInicial] = useState('0');
+    const [lanche, setLanche] = useState('0');
+    const [combustivel, setCombustivel] = useState('0');
+    const [troco, setTroco] = useState('0');
+    const [descrcaoOutros1, setDescrcaoOutros1] = useState('');
+    const [outros1, setoutros1] = useState('0');
+    const [descrcaoOutros2, setDescrcaoOutros2] = useState('');
+    const [outros2, setoutros2] = useState('0');
+    const [descrcaoOutros3, setDescrcaoOutros3] = useState('');
+    const [outros3, setoutros3] = useState('0');
     const [aVistaSelecionado, setAVistaSelecionado] = useState(false);
     const [aPrazoSelecionado, setAPrazoSelecionado] = useState(false);
     const [carregamentoMobal, setCarregamentoMobal] = useState(false);
@@ -67,9 +78,6 @@ export default function Lancamentos() {
             setQuantidadeEditado('0');
         }
     };
-
-
-
     const handleClose = () => {
         setOpen(false);
         setProdutoEditando(undefined);
@@ -85,8 +93,6 @@ export default function Lancamentos() {
                 const produtosceasa = await gerarTodasLojas(1);
                 const produtosPedidoFormulado = produtosceasa.filter(produto => produto.quantidade > 0)
                 setProdutosPedidos(produtosPedidoFormulado);
-
-
                 try {
                     setLoading(true);
                     const lancamentos = await ConsultarTabelaLancamentos('lancamento')
@@ -143,13 +149,45 @@ export default function Lancamentos() {
             }
         };
         fetchData();
-        //handleClose();
+        handleClose();
 
         const consultaFornecedores = async () => {
             const fornecedores = await ConsultarTabelaFornecedor('fornecedor')
             setFornecedores(fornecedores.message)
         }
         consultaFornecedores();
+
+        const ConsultarFinanceiro = async () => {
+            setLoading(true)
+            try {
+                const financeiro = await ConsultarTabelaFinanceiro('financeiro')
+                const dataHoje = dayjs().format('YYYY-MM-DD');
+                const financeiroHoje = financeiro?.message.filter(
+                    financeiro => dayjs(financeiro.data).format('YYYY-MM-DD') === dataHoje
+                )
+                console.log(financeiroHoje)
+                if (financeiroHoje) {
+                    setLoading(false)
+                    setValorInicial(financeiroHoje[0].json.valorInicial)
+                    setLanche(financeiroHoje[0].json.lanche)
+                    setCombustivel(financeiroHoje[0].json.combustivel)
+                    setTroco(financeiroHoje[0].json.troco)
+                    setDescrcaoOutros1(financeiroHoje[0].json.descrcaoOutros1)
+                    setoutros1(financeiroHoje[0].json.outros1)
+                    setDescrcaoOutros2(financeiroHoje[0].json.descrcaoOutros2)
+                    setoutros2(financeiroHoje[0].json.outros2)
+                    setDescrcaoOutros3(financeiroHoje[0].json.descrcaoOutros3)
+                    setoutros3(financeiroHoje[0].json.outros3)
+                } else {
+                    setLoading(false)
+                    console.log('NÃO TEM LANÇAMENTO DE FINANCEIRO HOJE')
+                }
+                console.log(financeiroHoje)
+            } catch (e) {
+                console.log('NÃO TEM LANÇAMENTO DE FINANCEIRO HOJE')
+            }
+        }
+        ConsultarFinanceiro()
     }, [atualizar]);
 
     const FazerLancamentoNoBanco = async () => {
@@ -157,9 +195,13 @@ export default function Lancamentos() {
         const index: number = LancamentoHoje?.findIndex(lancamento => lancamento.titulo === produtoEditando?.titulo) ?? -1;
 
 
-
         if (aVistaSelecionado === false && aPrazoSelecionado === false) {
-            setError('Não foi selecionado o tipo de pagamento')
+            if (parseFloat(QuantidadeEditado) > 0 && parseFloat(precoEditado) > 0) {
+                setError('Não foi selecionado o tipo de pagamento')
+
+            } else {
+                setError('Se você não comprou esse prouto selecione o pagamento como "A vista" para lançar zerado')
+            }
         } else {
             if (aPrazoSelecionado === true && fornecedor === '') {
                 setError('Nenhum fornecedor foi selecionado')
@@ -171,7 +213,7 @@ export default function Lancamentos() {
                         ...novoLancamentoHoje[index],
                         lancado: true,
                         pagamento: aVistaSelecionado ? 'avista' : 'aprazo',
-                        quantidade: parseInt(QuantidadeEditado),
+                        quantidade: parseFloat(QuantidadeEditado),
                         custo: CalcularTotal(),
                         total: parseFloat(precoEditado),
                         fornecedor: fornecedor
@@ -191,6 +233,7 @@ export default function Lancamentos() {
 
 
 
+
     };
 
     const CalcularTotal = () => {
@@ -202,9 +245,34 @@ export default function Lancamentos() {
         return formatarValorMonetario(total.toFixed(2).toString())
     };
 
+    const LancarFinanceiro = async () => {
+        const financeiro: Json11 = {
+            valorInicial: valorInicial,
+            lanche: lanche,
+            combustivel: combustivel,
+            troco: troco,
+            descrcaoOutros1: descrcaoOutros1,
+            outros1: outros1,
+            descrcaoOutros2: descrcaoOutros2,
+            outros2: outros2,
+            descrcaoOutros3: descrcaoOutros3,
+            outros3: outros3,
+        }
+        await InserirFinanceiro(financeiro)
+        EnviarMsg();
+        console.log(financeiro)
+    }
+
     const removeZerosEsquerda = (value: string) => {
         return value.replace(/^0+/, '') || '0';
     };
+    const sanitizeString = (inputString: string) => {
+        const dangerousChars = /[\0\x08\x09\x1a\n\r"'\\\%]/g;
+
+        const sanitizedString = inputString.replace(dangerousChars, '');
+
+        return sanitizedString;
+    }
 
     return (
         <ProtectedRouts>
@@ -228,8 +296,8 @@ export default function Lancamentos() {
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
-                        <Box sx={{ position: 'absolute' as 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4, }}>
-                            <Box display={'flex'} flexDirection={'row'} mb={2}>
+                        <Box sx={{ position: 'absolute' as 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: { xs: 350, md: 500 }, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4, }}>
+                            <Box display={'flex'} sx={{ flexDirection: { xs: 'column', md: 'row' } }} alignItems={'center'} justifyContent={'center'} mb={2}>
                                 <Box style={{ width: 150, height: 250, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'} mr={1}>
                                     <Image src={`/images/${produtoEditando.titulo}.png`} alt="Ibs-Logo" width={50} height={50} style={{ marginBottom: '10px', margin: 20 }} />
                                     <Box style={{ margin: 0, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
@@ -264,11 +332,11 @@ export default function Lancamentos() {
                             </Box>
                             {aPrazoSelecionado && (
                                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'} mb={2}>
-                                    <Box style={{ width: 450, height: 150, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                    <Box sx={{ width: { xs: 300, md: 450 }, height: 150, padding: { xs: 1, md: 1 }, backgroundColor: 'white' }} borderRadius={2} display={'flex'} flexDirection={'column'} border={1} borderColor={'gray'}>
                                         <Typography m={1} textAlign={'center'}>Selecione o fornecedor:</Typography>
                                         <Box display={'flex'} flexDirection={'row'} >
                                             <FormGroup>
-                                                <Select style={{ width: 400, margin: 2 }} value={fornecedor} onChange={(e) => setFornecedor(e.target.value)}>
+                                                <Select sx={{ width: { xs: 250, md: 400 }, margin: { xs: 1, md: 1 } }} value={fornecedor} onChange={(e) => setFornecedor(e.target.value)}>
                                                     <MenuItem
                                                         value=""
                                                     >OUTROS FORNECEDORES</MenuItem>
@@ -281,9 +349,7 @@ export default function Lancamentos() {
                                                         ))}
                                                 </Select>
                                             </FormGroup>
-
                                         </Box>
-
                                     </Box>
                                 </Box>
                             )}
@@ -324,6 +390,49 @@ export default function Lancamentos() {
                             </>
                         ))}
                 </Grid>
+
+                {!loading && (
+                    <>
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} mb={2}>
+                            <Box style={{ padding: 5, backgroundColor: 'white', width: 350 }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                <Typography m={1} textAlign={'center'}>Financeiro:</Typography>
+                                <Box style={{ padding: 5, backgroundColor: 'white', width: 310, margin: 3 }} borderRadius={2} display={'flex'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                    <Typography m={1} textAlign={'center'}>Valor inicial(Dinheiro):</Typography>
+                                    <TextField id="outlined-basic" label="Valor Inicial" variant="outlined" value={valorInicial} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setValorInicial(removeZerosEsquerda(e.target.value)) }} />
+                                </Box>
+                                <Box style={{ padding: 5, backgroundColor: 'white', width: 310, margin: 3 }} borderRadius={2} display={'flex'} flexDirection={'column'} border={1} borderColor={'gray'} alignItems={'flex-start'}>
+                                    <Typography m={1} textAlign={'center'}>Lanche:</Typography>
+                                    <TextField id="outlined-basic" label="Lanche" variant="outlined" value={lanche} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setLanche(removeZerosEsquerda(e.target.value)) }} />
+                                    <Typography m={1} textAlign={'center'}>Combustivel:</Typography>
+                                    <TextField id="outlined-basic" label="Combustivel" variant="outlined" value={combustivel} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setCombustivel(removeZerosEsquerda(e.target.value)) }} />
+                                    <Typography m={1} textAlign={'center'}>Troco:</Typography>
+                                    <TextField id="outlined-basic" label="Troco" variant="outlined" value={troco} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setTroco(removeZerosEsquerda(e.target.value)) }} />
+                                </Box>
+                                <Box style={{ padding: 5, backgroundColor: 'white', width: 310, margin: 3 }} borderRadius={2} display={'flex'} flexDirection={'column'} border={1} borderColor={'gray'}>
+                                    <Typography m={1} textAlign={'center'}>Outros:</Typography>
+
+                                    <Box display={'flex'} flexDirection={'row'}>
+                                        <TextField id="outlined-basic" label="Descrição" variant="outlined" value={descrcaoOutros1} style={{ backgroundColor: 'white', margin: 5 }} type="text" onChange={(e) => { setDescrcaoOutros1(sanitizeString(e.target.value)) }} />
+                                        <TextField id="outlined-basic" label="Valor" variant="outlined" value={outros1} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setoutros1(removeZerosEsquerda(e.target.value)) }} />
+                                    </Box>
+                                    <Box display={'flex'} flexDirection={'row'}>
+                                        <TextField id="outlined-basic" label="Descrição" variant="outlined" value={descrcaoOutros2} style={{ backgroundColor: 'white', margin: 5 }} type="text" onChange={(e) => { setDescrcaoOutros2(sanitizeString(e.target.value)) }} />
+                                        <TextField id="outlined-basic" label="Valor" variant="outlined" value={outros2} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setoutros2(removeZerosEsquerda(e.target.value)) }} />
+                                    </Box>
+                                    <Box display={'flex'} flexDirection={'row'}>
+                                        <TextField id="outlined-basic" label="Descrição" variant="outlined" value={descrcaoOutros3} style={{ backgroundColor: 'white', margin: 5 }} type="text" onChange={(e) => { setDescrcaoOutros3(sanitizeString(e.target.value)) }} />
+                                        <TextField id="outlined-basic" label="Valor" variant="outlined" value={outros3} style={{ backgroundColor: 'white', margin: 5 }} type="number" onChange={(e) => { setoutros3(removeZerosEsquerda(e.target.value)) }} />
+                                    </Box>
+                                </Box>
+                                <Button variant="contained" style={{ backgroundColor: 'green', margin: 5 }} onClick={() => { LancarFinanceiro() }}>
+                                    Salvar
+                                </Button>
+                            </Box>
+
+                        </Box>
+
+                    </>
+                )}
 
                 {loading && (
                     <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>

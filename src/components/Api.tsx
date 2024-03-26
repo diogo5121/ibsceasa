@@ -317,6 +317,56 @@ export async function ConsultarTabelaFornecedor(tabela: string): Promise<Root10>
     }
 }
 
+export interface Root11 {
+    success: boolean
+    message: Message11[]
+  }
+  
+  export interface Message11 {
+    id: number
+    data: string
+    json: Json11
+  }
+  
+  export interface Json11 {
+    valorInicial: string,
+    lanche: string,
+    combustivel: string,
+    troco: string,
+    descrcaoOutros1: string,
+    outros1: string,
+    descrcaoOutros2: string,
+    outros2: string,
+    descrcaoOutros3: string,
+    outros3: string,
+  }
+
+  export async function ConsultarTabelaFinanceiro(tabela: string): Promise<Root11> {
+
+    try {
+        const response = await axios.post<Root11>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+export async function InserirFinanceiro(jsonData: Json11): Promise<Root6> {
+    try {
+        const response = await axios.post<Root6>('http://45.164.8.122:30492/api/banco/inserirfinanceiro', {
+            jsonData: jsonData,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao lancar financeiro:', error);
+        throw error;
+    }
+}
+
 export interface Root7 {
     success: boolean
     message: Message5[]
