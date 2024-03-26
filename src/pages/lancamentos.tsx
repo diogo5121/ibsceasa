@@ -273,8 +273,9 @@ export default function Lancamentos() {
                                                         value=""
                                                     >OUTROS FORNECEDORES</MenuItem>
                                                     {fornecedores?.sort((a, b) => a.nome.localeCompare(b.nome))
-                                                        .map(fornecedor => (
+                                                        .map((fornecedor, index) => (
                                                             <MenuItem
+                                                                key={index}
                                                                 value={fornecedor.nome}
                                                             >{fornecedor.nome}</MenuItem>
                                                         ))}
