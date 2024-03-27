@@ -376,7 +376,7 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
     const pedidosontem = await gerarTodasLojasAtualizado(1, day)
     const fornecedores = await ConsultarTabelaFornecedor('fornecedor')
     const financeiro = await ConsultarTabelaFinanceiro('financeiro')
-    const hoje = dayjs(day).format('DD-MM-YYYY')
+    const hoje = dayjs().format('DD-MM-YYYY')
 
     const financeirohoje = financeiro?.message.filter(pedido => {
         return dayjs(pedido.data).format('DD-MM-YYYY') === hoje;

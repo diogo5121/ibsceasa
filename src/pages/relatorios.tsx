@@ -41,13 +41,18 @@ export default function Home() {
             setLoading(true)
             try {
                 const lacamentos = await ConsultarTabelaLancamentos('lancamento')
-                lacamentos.message[0].lancamento.map(produto => {
-                    if(produto.lancado === false){
+                const dataHoje = dayjs().format('YYYY-MM-DD');
+                const lancamentoHoje2 = lacamentos?.message.filter(
+                    lacamento => dayjs(lacamento.data).format('YYYY-MM-DD') === dataHoje
+                )
+                console.log(lancamentoHoje2)
+                lancamentoHoje2[0].lancamento.map(produto => {
+                    if (produto.lancado === false) {
                         setTemLancamentoHoje(false)
                     }
                 })
-                setLancamentoHoje(lacamentos.message[0].lancamento)
-            
+                setLancamentoHoje(lancamentoHoje2[0].lancamento)
+
             } catch {
                 setTemLancamentoHoje(false)
 
@@ -61,7 +66,7 @@ export default function Home() {
             try {
                 const conferencias = await ConsultarTabelaConferencia('conferencia')
                 setConferencias(conferencias)
-            
+
             } catch {
 
             }
@@ -95,7 +100,7 @@ export default function Home() {
                 ) : (
                     <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {TemLancamentoHoje === true && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioLancamento(LancamentoHoje, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioLancamento(LancamentoHoje, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Relatorio lançamento
@@ -107,7 +112,7 @@ export default function Home() {
 
 
                         {conferenciaHoje?.filter(pedidos => pedidos.loja === 1).length === 1 && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 1), 1, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 1), 1, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Loja 1
@@ -117,7 +122,7 @@ export default function Home() {
                             </Button>
                         )}
                         {conferenciaHoje?.filter(pedidos => pedidos.loja === 2).length === 1 && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 2), 2, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 2), 2, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Loja 2
@@ -127,7 +132,7 @@ export default function Home() {
                             </Button>
                         )}
                         {conferenciaHoje?.filter(pedidos => pedidos.loja === 3).length === 1 && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 3), 3, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 3), 3, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Loja 3
@@ -137,7 +142,7 @@ export default function Home() {
                             </Button>
                         )}
                         {conferenciaHoje?.filter(pedidos => pedidos.loja === 4).length === 1 && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 4), 4, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 4), 4, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Loja 5
@@ -147,7 +152,7 @@ export default function Home() {
                             </Button>
                         )}
                         {conferenciaHoje?.filter(pedidos => pedidos.loja === 5).length === 1 && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 5), 5, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioConferencia(conferenciaHoje?.filter(pedidos => pedidos.loja === 5), 5, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Loja 7
@@ -157,7 +162,7 @@ export default function Home() {
                             </Button>
                         )}
                         {conferenciaHoje?.length === 5 && (
-                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => {gerarRelatorioConferenciaGeral(conferenciaHoje, dataHoje)}}>
+                            <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { gerarRelatorioConferenciaGeral(conferenciaHoje, dataHoje) }}>
                                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                                     <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                                         Conferencia Geral
