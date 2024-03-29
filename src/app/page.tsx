@@ -37,7 +37,7 @@ export default function Home() {
         </Box>
 
         <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {(Today === 0 || Today === 2 || Today === 4) && (
+          {(Today === 0 || Today === 2 || Today === 5) && (
             <>
               <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
@@ -74,7 +74,7 @@ export default function Home() {
             </Box>
           </Button>
 
-          {(Today === 1 || Today === 3 || Today === 5) && (
+          {(Today === 1 || Today === 3 || Today === 6) && (
             <>
               <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/lancamentos')}>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
@@ -96,14 +96,14 @@ export default function Home() {
 
           )}
         </Grid>
-        {(Today === 0 || Today === 2 || Today === 4) && (
+        {(Today === 0 || Today === 2 || Today === 5) && (
           <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'green'}>
               Hoje é dia de pedido
             </Typography>
           </Box>
         )}
-        {(Today === 1 || Today === 3 || Today === 5 || Today === 6) && (
+        {(Today === 1 || Today === 3 || Today === 6 || Today === 6) && (
           <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
               Hoje não é dia de pedido
