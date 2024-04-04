@@ -49,9 +49,9 @@ export default function Loja5() {
     };
 
 
-    const handleRealizarConferencia = () => {
+    const handleRealizarConferencia = async () => {
         setLoading(true)
-        InserirConferencia(5, produtosConferidos)
+        await InserirConferencia(5, produtosConferidos)
         route.push('/')
     };
 
