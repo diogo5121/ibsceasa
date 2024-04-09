@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { HistoryToggleOffSharp, NoteAlt, Notes, PriceChange } from "@mui/icons-material";
+import { ClosedCaption, ClosedCaptionDisabled, HistoryToggleOffSharp, NoteAlt, Notes, PriceChange } from "@mui/icons-material";
 import { BiBox, BiPencil } from "react-icons/bi";
 import { BsBox, BsBox2, BsBoxFill } from "react-icons/bs";
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { FaClosedCaptioning, FaFolderClosed } from "react-icons/fa6";
+import { GoInfo, GoIssueClosed } from "react-icons/go";
 
 
 
@@ -37,6 +39,14 @@ export default function Home() {
         </Box>
 
         <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/')}>
+            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+              <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                REGISTRO DIARIO DE PERCAS
+              </Typography>
+              <GoInfo size={25} />
+            </Box>
+          </Button>
           {(Today === 0 || Today === 2 || Today === 4) && (
             <>
               <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>

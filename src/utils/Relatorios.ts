@@ -7,10 +7,10 @@ import { formatarValorMonetario } from "./ReformularValor";
 
 const tamanhoFonte = 9;
 
-export function gerarRelatorioPDF(produtos: Message4[], numeroLoja: number): void {
+export function gerarRelatorioPDF(produtos: Message4[], numeroLoja: number, days: string): void {
     // Cria um novo documento PDF
     const doc = new jsPDF();
-    const day = dayjs().format('DD-MM-YYYY')
+    const day = dayjs(days).format('DD-MM-YYYY')
 
     doc.setFontSize(18);
     doc.text(`PEDIDO CEASA LOJA ${numeroLoja} - IBS - ${day}`, 10, 20);
@@ -65,10 +65,10 @@ export function gerarRelatorioPDF(produtos: Message4[], numeroLoja: number): voi
     // Exibe mensagem no console para verificar se a função foi chamada
     console.log('Relatório PDF gerado');
 }
-export async function gerarRelatorioPDFTodas() {
+export async function gerarRelatorioPDFTodas(Pedido : Message4[], dia: string){
     const pedidos = await ConsultarTabelaPedidos('pedidos');
-    const dataHoje = dayjs().format('YYYY-MM-DD');
-    const pedidosHoje = pedidos?.message.filter(pedido => {
+    const dataHoje = dayjs(dia).format('YYYY-MM-DD');
+    const pedidosHoje = Pedido?.filter(pedido => {
         return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
     });
 
@@ -107,7 +107,7 @@ export async function gerarRelatorioPDFTodas() {
 
     // Cria um novo documento PDF
     const doc = new jsPDF();
-    const day = dayjs().format('DD-MM-YYYY')
+    const day = dayjs(dia).format('DD-MM-YYYY')
 
     doc.setFontSize(18);
     doc.text(`PEDIDO CEASA TODAS AS LOJAS - IBS - ${day}`, 10, 20);
@@ -243,9 +243,9 @@ export async function gerarTodasLojasAtualizado(days: number, DiaHoje: string) {
     }
     return jsonGeral;
 }
-export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
+export async function gerarRelatorioPDFDEL(pedidossss: Message4[], day: string){
     const pedidos = await ConsultarTabelaPedidos('pedidos');
-    const dataHoje = dayjs().format('YYYY-MM-DD');
+    const dataHoje = dayjs(day).format('YYYY-MM-DD');
     const pedidosHoje = pedidos?.message.filter(pedido => {
         return dayjs(pedido.data).format('YYYY-MM-DD') === dataHoje;
     });
@@ -294,7 +294,10 @@ export async function gerarRelatorioPDFDEL(pedidossss: Message4[]) {
     console.log(lojasOrganizadas)
 
     const doc = new jsPDF('landscape');
-    let y = 10;
+    let y = 4;
+    doc.setFontSize(10);
+    doc.text('Pedidos do dia: ' + dataHoje, 20, y);
+    y = 10;
     doc.setFontSize(13);
     doc.text('Descrição', 20, y);
     doc.text('Loja 1', 80, y);
@@ -376,7 +379,7 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
     const pedidosontem = await gerarTodasLojasAtualizado(1, day)
     const fornecedores = await ConsultarTabelaFornecedor('fornecedor')
     const financeiro = await ConsultarTabelaFinanceiro('financeiro')
-    const hoje = dayjs().format('DD-MM-YYYY')
+    const hoje = dayjs(day).format('DD-MM-YYYY')
 
     const financeirohoje = financeiro?.message.filter(pedido => {
         return dayjs(pedido.data).format('DD-MM-YYYY') === hoje;
@@ -549,7 +552,7 @@ export async function gerarRelatorioLancamento(lancamento: Lancamento[], day: st
 export async function gerarRelatorioConferencia(conferenciaa: Message5[], numeroLoja: number, days: string) {
     const doc = new jsPDF();
     const ontem = dayjs(days).subtract(1, 'days').format('DD-MM-YYYY')
-    const hoje = dayjs().format('DD-MM-YYYY')
+    const hoje = dayjs(days).format('DD-MM-YYYY')
     const pedidos = await ConsultarTabelaPedidos('pedidos')
 
     const pedidosOntem = pedidos?.message.filter(pedido => {
