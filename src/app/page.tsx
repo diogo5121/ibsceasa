@@ -20,6 +20,7 @@ import { GoInfo, GoIssueClosed } from "react-icons/go";
 export default function Home() {
   const router = useRouter()
   const Today = dayjs().day()
+  const Horario = dayjs().format('HH')
   const [nome, setNome] = useState('')
 
 
@@ -50,26 +51,31 @@ export default function Home() {
               <GoInfo size={25} />
             </Box>
           </Button>
-          {(Today === 0 || Today === 2 || Today === 4) && (
+          {parseFloat(Horario) < 17 && (
             <>
-              <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
-                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
-                  <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                    Fazer Pedido
-                  </Typography>
-                  <AssignmentIcon />
-                </Box>
-              </Button>
-              <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/editarpedido')}>
-                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
-                  <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                    Editar pedido
-                  </Typography>
-                  <BiPencil size={25} />
-                </Box>
-              </Button>
+              {(Today === 0 || Today === 2 || Today === 4) && (
+                <>
+                  <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
+                    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                      <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                        Fazer Pedido
+                      </Typography>
+                      <AssignmentIcon />
+                    </Box>
+                  </Button>
+                  <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/editarpedido')}>
+                    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                      <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                        Editar pedido
+                      </Typography>
+                      <BiPencil size={25} />
+                    </Box>
+                  </Button>
+                </>
+              )}
             </>
           )}
+
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/relatorios')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
@@ -102,18 +108,30 @@ export default function Home() {
           )}
         </Grid>
         {(Today === 0 || Today === 2 || Today === 4) && (
-          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-            <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'green'}>
-              Hoje é dia de pedido
-            </Typography>
-          </Box>
+          <>
+            <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+              <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'green'}>
+                Hoje é dia de pedido
+              </Typography>
+            </Box>
+            {parseFloat(Horario) > 17 && (
+              <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
+                  Area de pedidos fechado pelo horario
+                </Typography>
+              </Box>
+            )}
+          </>
         )}
+
         {(Today === 1 || Today === 3 || Today === 5 || Today === 6) && (
-          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-            <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
-              Hoje não é dia de pedido
-            </Typography>
-          </Box>
+          <>
+            <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+              <Typography variant="h5" component="h1" fontWeight={700} fontSize={15} color={'red'}>
+                Hoje não é dia de pedido
+              </Typography>
+            </Box>
+          </>
         )}
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
           <Typography variant="h5" component="h1" m={2} fontWeight={700}>
@@ -148,7 +166,7 @@ export default function Home() {
           </Button>
           {nome != '' && (
             <>
-              {nome === "diogo d" && (
+              {nome === "diogo d" || nome === 'romualdo' && (
                 <>
                   <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { router.push('/config'); }}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
