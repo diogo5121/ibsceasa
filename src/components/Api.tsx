@@ -447,3 +447,18 @@ export async function ConsultarTabelaPercas(tabela: string): Promise<Root15> {
         throw error;
     }
 }
+
+export async function JogarPercas(loja: number, jsonData: string): Promise<Root3> {
+
+    try {
+        const response = await axios.post<Root3>('http://45.164.8.122:30492/api/banco/percas', {
+            loja: loja,
+            jsonData: jsonData,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao lancar pedido:', error);
+        throw error;
+    }
+}

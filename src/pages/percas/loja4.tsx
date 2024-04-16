@@ -5,7 +5,7 @@ import { Box, Button, CircularProgress, Grid, IconButton, TextField, Typography 
 import NavBarPages from '@/components/NavBarPages';
 import { BiPlus } from 'react-icons/bi';
 import { RiSubtractFill } from "react-icons/ri";
-import { ConsultarProduto, ConsultarTabelaCeasa, JogarPedido, Root3 } from '@/components/Api';
+import { ConsultarProduto, ConsultarTabelaCeasa, JogarPedido, JogarPercas, Root3 } from '@/components/Api';
 import { formatarValorMonetario } from '@/utils/ReformularValor';
 import '@/app/globals.css'
 import { useRouter } from 'next/navigation';
@@ -84,7 +84,7 @@ export default function Loja4() {
 
     const LançarPedido = async () => {
         setBotaoloading(true)
-        await JogarPedido(4, JSON.stringify(custosProdutos))
+        await JogarPercas(4, JSON.stringify(custosProdutos))
         route.push('/')
     };
 
