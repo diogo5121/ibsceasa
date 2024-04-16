@@ -320,15 +320,15 @@ export async function ConsultarTabelaFornecedor(tabela: string): Promise<Root10>
 export interface Root11 {
     success: boolean
     message: Message11[]
-  }
-  
-  export interface Message11 {
+}
+
+export interface Message11 {
     id: number
     data: string
     json: Json11
-  }
-  
-  export interface Json11 {
+}
+
+export interface Json11 {
     valorInicial: string,
     lanche: string,
     combustivel: string,
@@ -339,9 +339,9 @@ export interface Root11 {
     outros2: string,
     descrcaoOutros3: string,
     outros3: string,
-  }
+}
 
-  export async function ConsultarTabelaFinanceiro(tabela: string): Promise<Root11> {
+export async function ConsultarTabelaFinanceiro(tabela: string): Promise<Root11> {
 
     try {
         const response = await axios.post<Root11>('http://45.164.8.122:30492/api/banco/consulta', {
@@ -405,6 +405,40 @@ export async function MudarStatus(codigo: string) {
     try {
         const response = await axios.post('http://45.164.8.122:30492/api/banco/statusproduto', {
             codigo,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao consultar produto:', error);
+        throw error;
+    }
+}
+
+
+export interface Root15 {
+    success: boolean
+    message: Message15[]
+}
+
+export interface Message15 {
+    id: number
+    lojaid: number
+    data: string
+    percas: Perca[]
+}
+
+export interface Perca {
+    custo: string
+    status: string
+    titulo: string
+    quantidade: number
+}
+
+export async function ConsultarTabelaPercas(tabela: string): Promise<Root15> {
+
+    try {
+        const response = await axios.post<Root15>('http://45.164.8.122:30492/api/banco/consulta', {
+            tabela: tabela,
         });
 
         return response.data;

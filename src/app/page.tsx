@@ -12,7 +12,7 @@ import { BsBox, BsBox2, BsBoxFill } from "react-icons/bs";
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { FaClosedCaptioning, FaFolderClosed } from "react-icons/fa6";
+import { FaClosedCaptioning, FaFolderClosed, FaGear } from "react-icons/fa6";
 import { GoInfo, GoIssueClosed } from "react-icons/go";
 
 
@@ -20,9 +20,12 @@ import { GoInfo, GoIssueClosed } from "react-icons/go";
 export default function Home() {
   const router = useRouter()
   const Today = dayjs().day()
+  const [nome, setNome] = useState('')
 
 
   useEffect(() => {
+    const nome = localStorage.getItem('nome') || '';
+    setNome(nome)
   }, [])
 
   return (
@@ -39,7 +42,7 @@ export default function Home() {
         </Box>
 
         <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/')}>
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/percas')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
               <Typography variant='body1' component="h1" m={2} fontWeight={500}>
                 REGISTRO DIARIO DE PERCAS
@@ -73,14 +76,6 @@ export default function Home() {
                 RELATORIOS
               </Typography>
               <Notes />
-            </Box>
-          </Button>
-          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/produtos')}>
-            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
-              <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                PRODUTOS CEASA
-              </Typography>
-              <BsBoxFill size={25} />
             </Box>
           </Button>
 
@@ -142,6 +137,32 @@ export default function Home() {
               <PriceChange />
             </Box>
           </Button>
+
+          <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { router.push('/faturamento'); }}>
+            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+              <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                Faturamento das Lojas
+              </Typography>
+              <AssessmentIcon />
+            </Box>
+          </Button>
+          {nome != '' && (
+            <>
+              {nome === "diogo d" && (
+                <>
+                  <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { router.push('/config'); }}>
+                    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                      <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                        CONFIGURAÇÕES GERAL
+                      </Typography>
+                      <FaGear />
+                    </Box>
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+
         </Grid>
 
 
