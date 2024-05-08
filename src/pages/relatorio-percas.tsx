@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import ProtectedRoutes from "@/components/ProtectedRoutes";
-import { Box, FormControl, FormControlLabel, Checkbox, Typography, TextField, Table, TableCell, TableRow, TableHead, TableContainer, TableBody, Paper } from "@mui/material";
+import { Box, FormControl, FormControlLabel, Checkbox, Typography, TextField, Table, TableCell, TableRow, TableHead, TableContainer, TableBody, Paper, Grid } from "@mui/material";
 import NavBarPages from '@/components/NavBarPages';
 import dayjs from 'dayjs';
 import "../app/globals.css";
@@ -45,11 +45,11 @@ export default function Produtos() {
 
 
     const perdasNoPeriodo = percas
-    .filter(item => valorInicialChecked.includes(item.lojaid))
-    .filter((perca) => {
-        const percaDate = dayjs(perca.data).format('YYYY-MM-DD');
-        return percaDate >= dataInicial && percaDate <= dataFinal;
-    });
+        .filter(item => valorInicialChecked.includes(item.lojaid))
+        .filter((perca) => {
+            const percaDate = dayjs(perca.data).format('YYYY-MM-DD');
+            return percaDate >= dataInicial && percaDate <= dataFinal;
+        });
 
     const valorTotalPerdas = perdasNoPeriodo.reduce((total, perca) => {
         return total + perca.percas.reduce((subtotal, item) => {
@@ -69,57 +69,61 @@ export default function Produtos() {
                         RELATÓRIO DE PERDAS
                     </Typography>
                 </Box>
-                <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'} mt={2} border={1} borderRadius={20}>
-                    <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} m={5}>
-                        <Typography variant="h5" component="h1" m={1} fontWeight={400} fontSize={20}>
-                            Escolha as lojas:
-                        </Typography>
-                        <FormControl>
-                            {lojas.map((loja) => (
-                                <FormControlLabel
-                                    key={loja.id}
-                                    control={
-                                        <Checkbox
-                                            checked={valorInicialChecked.includes(loja.id)}
-                                            onChange={() => handleCheckboxChange(loja.id)}
-                                        />
-                                    }
-                                    label={loja.nome}
-                                />
-                            ))}
-                        </FormControl>
-                    </Box>
-                    <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-                        <Typography variant="h5" component="h1" m={1} fontWeight={400} fontSize={20}>
-                            Escolha o período:
-                        </Typography>
-                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'}>
-                            <TextField
-                                id="dataInicial"
-                                label="Data Inicial"
-                                type="date"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                value={dataInicial}
-                                onChange={(e) => setDataInicial(e.target.value)}
-                            />
+                <Grid style={{border: '1px solid', borderRadius: 15, display: 'flex', alignItems: 'center', justifyContent: 'center'}} container>
+                    <Grid item>
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} m={5}>
                             <Typography variant="h5" component="h1" m={1} fontWeight={400} fontSize={20}>
-                                -
+                                Escolha as lojas:
                             </Typography>
-                            <TextField
-                                id="dataFinal"
-                                label="Data Final"
-                                type="date"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                value={dataFinal}
-                                onChange={(e) => setDataFinal(e.target.value)}
-                            />
+                            <FormControl>
+                                {lojas.map((loja) => (
+                                    <FormControlLabel
+                                        key={loja.id}
+                                        control={
+                                            <Checkbox
+                                                checked={valorInicialChecked.includes(loja.id)}
+                                                onChange={() => handleCheckboxChange(loja.id)}
+                                            />
+                                        }
+                                        label={loja.nome}
+                                    />
+                                ))}
+                            </FormControl>
                         </Box>
-                    </Box>
-                </Box>
+                    </Grid>
+                    <Grid item>
+                        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
+                            <Typography variant="h5" component="h1" m={1} fontWeight={400} fontSize={20}>
+                                Escolha o período:
+                            </Typography>
+                            <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'}>
+                                <TextField
+                                    id="dataInicial"
+                                    label="Data Inicial"
+                                    type="date"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={dataInicial}
+                                    onChange={(e) => setDataInicial(e.target.value)}
+                                />
+                                <Typography variant="h5" component="h1" m={1} fontWeight={400} fontSize={20}>
+                                    -
+                                </Typography>
+                                <TextField
+                                    id="dataFinal"
+                                    label="Data Final"
+                                    type="date"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={dataFinal}
+                                    onChange={(e) => setDataFinal(e.target.value)}
+                                />
+                            </Box>
+                        </Box>
+                    </Grid>
+                </Grid>
 
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} mt={2}>
                     <Typography>Valor geral das perdas no período:</Typography>
@@ -140,16 +144,16 @@ export default function Produtos() {
                             <TableBody>
                                 {perdasNoPeriodo.map((perca, index) => (
                                     perca.percas
-                                    .filter(perca => perca.quantidade != 0)
-                                    .filter(perca => perca.quantidade != null)
-                                    .map((item, i) => (
-                                        <TableRow key={index + i}>
-                                            <TableCell>{item.titulo}</TableCell>
-                                            <TableCell>{item.custo}</TableCell>
-                                            <TableCell>{item.quantidade}</TableCell>
-                                            <TableCell>{(parseFloat(item.custo.replace('R$', '').replace(',', '.')) * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
-                                        </TableRow>
-                                    ))
+                                        .filter(perca => perca.quantidade != 0)
+                                        .filter(perca => perca.quantidade != null)
+                                        .map((item, i) => (
+                                            <TableRow key={index + i}>
+                                                <TableCell>{item.titulo}</TableCell>
+                                                <TableCell>{item.custo}</TableCell>
+                                                <TableCell>{item.quantidade}</TableCell>
+                                                <TableCell>{(parseFloat(item.custo.replace('R$', '').replace(',', '.')) * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+                                            </TableRow>
+                                        ))
                                 ))}
                             </TableBody>
                         </Table>
