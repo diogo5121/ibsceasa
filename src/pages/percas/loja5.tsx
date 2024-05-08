@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import ProtectedRouts from "@/components/ProtectedRoutes";
-import { Box, Button, CircularProgress, Grid, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, FormControl, Grid, IconButton, Input, InputAdornment, OutlinedInput, TextField, Typography } from "@mui/material";
 import NavBarPages from '@/components/NavBarPages';
-import { BiPlus } from 'react-icons/bi';
+import { BiPlus, BiSearch } from 'react-icons/bi';
 import { RiSubtractFill } from "react-icons/ri";
 import { ConsultarProduto, ConsultarTabelaCeasa, JogarPedido, JogarPercas, Root3 } from '@/components/Api';
 import { formatarValorMonetario } from '@/utils/ReformularValor';
@@ -16,6 +16,7 @@ export default function Loja5() {
     const [loading, setLoading] = useState(true);
     const [produtosceasaTotal, setProdutosCeasaTotal] = useState<Root3>();
     const [botaoloading, setBotaoloading] = useState(false);
+    const [search, setSearch] = useState('');
     const [custosProdutos, setCustosProdutos] = useState<{ titulo: string; custo: string; quantidade: number, status: string }[]>([]);
     const route = useRouter()
 
@@ -26,12 +27,13 @@ export default function Loja5() {
         };
         fetchData();
     }, []);
+
     useEffect(() => {
         const consultarTodosCustos = async () => {
             if (produtosceasaTotal) {
                 setLoading(true);
                 const custos: { titulo: string; custo: string; quantidade: number, status: string }[] = [];
-                for (const anuncio of produtosceasaTotal.message.filter(produto => produto.status === 'ativo')) {
+                for (const anuncio of produtosceasaTotal.message) {
                     try {
                         const custo = await consultarCusto(anuncio.codigo);
                         custos.push({ titulo: anuncio.titulo, custo, quantidade: 0, status: anuncio.status });
@@ -39,6 +41,7 @@ export default function Loja5() {
                         console.log('PRODUTO NÃO ENCONTRADO', anuncio.titulo);
                     }
                 }
+
                 setCustosProdutos(custos);
                 setLoading(false);
             }
@@ -60,13 +63,17 @@ export default function Loja5() {
         }
     };
 
-    const handleQuantityChange = (e: string, index: number) => {
-        const updatedProdutos = [...custosProdutos];
-        const newQuantity = parseInt(e, 10);
-        if (!isNaN(newQuantity) && newQuantity >= 0) {
-            updatedProdutos[index].quantidade = newQuantity;
-            setCustosProdutos(updatedProdutos);
-        }
+    const handleQuantityChange = (e: string, titulo: string) => {
+        const updatedProdutos = custosProdutos.map((produto) => {
+            if (produto.titulo === titulo) {
+                return {
+                    ...produto,
+                    quantidade: parseFloat(e),
+                };
+            }
+            return produto;
+        });
+        setCustosProdutos(updatedProdutos);
     };
 
     const handleAddQuantity = (index: number) => {
@@ -96,15 +103,32 @@ export default function Loja5() {
                 <NavBarPages />
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <Typography variant="h5" component="h1" m={1} fontWeight={700}>
-                        Loja 7 - MEGA VERDE
+                        Loja 7 - Mega Verde
                     </Typography>
                 </Box>
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <Typography>Perca do dia: {dayjs().format('DD/MM/YYYY').toString()}</Typography>
                 </Box>
+                <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                    <FormControl variant="outlined">
+                        <OutlinedInput
+                            onChange={(e) => { setSearch(e.target.value) }}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton color="inherit">
+                                        <BiSearch />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                </Box>
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {custosProdutos
+                        .filter(produto =>
+                            produto.titulo.toLowerCase().includes(search.toLowerCase())
+                        )
                         .sort((a, b) => a.titulo.localeCompare(b.titulo))
                         .map((produto, index) => (
                             <Box key={index} style={{ width: 160, height: 250, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
@@ -118,7 +142,7 @@ export default function Loja5() {
                                     <IconButton color="inherit" aria-label="subtract" onClick={() => handleSubtractQuantity(index)}>
                                         <RiSubtractFill />
                                     </IconButton>
-                                    <TextField size='small' type='number' value={produto.quantidade.toString()} onChange={(e) => { handleQuantityChange(e.target.value, index); console.log() }} style={{ padding: 0 }} />
+                                    <TextField size='small' type='number' value={produto.quantidade.toString()} onChange={(e) => { handleQuantityChange(e.target.value, produto.titulo); console.log() }} style={{ padding: 0 }} />
                                     <IconButton color="inherit" aria-label="add" onClick={() => handleAddQuantity(index)}>
                                         <BiPlus />
                                     </IconButton>

@@ -171,7 +171,7 @@ export default function Home() {
                   <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { router.push('/config'); }}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                       <Typography variant='body1' component="h1" m={2} fontWeight={500}>
-                        CONFIGURAÇÕES GERAL
+                        PAINEL ADMIN
                       </Typography>
                       <FaGear />
                     </Box>

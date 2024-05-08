@@ -48,6 +48,14 @@ export default function Config() {
                             <BsBoxFill size={25} />
                         </Box>
                     </Button>
+                    <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/relatorio-percas')}>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                            <Typography variant='body1' component="h1" m={2} fontWeight={500}>
+                                Relatorio de percas
+                            </Typography>
+                            <BsBoxFill size={25} />
+                        </Box>
+                    </Button>
                 </Grid>
             </Box>
         </ProtectedRouts>
