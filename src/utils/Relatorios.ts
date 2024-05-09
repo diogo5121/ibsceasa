@@ -321,7 +321,9 @@ export async function gerarRelatorioPDFDEL(pedidossss: Message4[], day: string){
     let numeroPorPagina = 20;
     y += 10;
 
-    jsonGeral.forEach((pedido, index) => {
+    jsonGeral
+    .sort((a, b) => a.titulo.localeCompare(b.titulo))
+    .forEach((pedido, index) => {
         if (pedido.quantidade === 0) {
 
         } else {
@@ -672,7 +674,9 @@ export async function gerarRelatorioConferenciaGeral(conferenciaa: Message5[], d
     doc.setLineWidth(0.5); // Define a largura da linha
     doc.line(10, y + 1, 200, y + 1);
     y += 4;
-    jsonGeral.map(produto => {
+    jsonGeral
+    .sort((a, b) => a.titulo.localeCompare(b.titulo))
+    .map(produto => {
         if (ContaProdutos === numeroPorPagina) {
             doc.addPage()
             doc.setFontSize(18);
