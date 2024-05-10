@@ -166,7 +166,7 @@ export default function Home() {
           </Button>
           {nome != '' && (
             <>
-              {(nome === "diogo d" || nome === 'romualdo') && (
+              {(nome === "diogo d" || nome === 'romualdo' || nome === 'IARA FERREIRA') && (
                 <>
                   <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => { router.push('/config'); }}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>

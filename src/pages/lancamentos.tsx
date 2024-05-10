@@ -369,6 +369,7 @@ export default function Lancamentos() {
 
                 <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 7 }}>
                     {produtosPedido
+                        ?.sort((a, b) => a.titulo.localeCompare(b.titulo))
                         ?.map(produto => (
                             <>
                                 <Box style={{ width: 160, height: 250, margin: 10, padding: 5, backgroundColor: 'white' }} borderRadius={2} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'} border={1} borderColor={'gray'}>
