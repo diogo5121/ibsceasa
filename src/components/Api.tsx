@@ -15,7 +15,7 @@ export async function fazerLogin(
 
 
     try {
-        const response = await axios.post<LoginResponse>('http://192.168.254.130:30492/api/ciss/login', {
+        const response = await axios.post<LoginResponse>('http://45.5.43.168:30492/api/ciss/login', {
             usuario: usuario,
             senha: senha,
         });
@@ -48,7 +48,7 @@ export async function ObterFaturamento(data: string, loja: string): Promise<Fatu
     const token = localStorage.getItem('token');
 
     try {
-        const response = await axios.post<Faturamento>('http://192.168.254.130:30492/api/ciss/faturamento', {
+        const response = await axios.post<Faturamento>('http://45.5.43.168:30492/api/ciss/faturamento', {
             token: token,
             data: data,
             empresa: loja,
@@ -131,7 +131,7 @@ export async function ConsultarProduto(codigo: string): Promise<Root> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await axios.post<Root>('http://192.168.254.130:30492/api/ciss/produto', {
+        const response = await axios.post<Root>('http://45.5.43.168:30492/api/ciss/produto', {
             token: token,
             codigo: codigo,
         });
@@ -159,7 +159,7 @@ export interface Message2 {
 export async function ConsultarTabelaCeasa(tabela: string): Promise<Root3> {
 
     try {
-        const response = await axios.post<Root3>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root3>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -179,7 +179,7 @@ export interface Root6 {
 export async function JogarPedido(loja: number, jsonData: string): Promise<Root3> {
 
     try {
-        const response = await axios.post<Root3>('http://192.168.254.130:30492/api/banco/inserirpedido', {
+        const response = await axios.post<Root3>('http://45.5.43.168:30492/api/banco/inserirpedido', {
             loja: loja,
             jsonData: jsonData,
         });
@@ -200,7 +200,7 @@ export interface conferencia {
 export async function InserirConferencia(loja: number, jsonData: conferencia[]): Promise<Root6> {
 
     try {
-        const response = await axios.post<Root6>('http://192.168.254.130:30492/api/banco/inserirconferencia', {
+        const response = await axios.post<Root6>('http://45.5.43.168:30492/api/banco/inserirconferencia', {
             loja: loja,
             jsonData: jsonData,
         });
@@ -214,7 +214,7 @@ export async function InserirConferencia(loja: number, jsonData: conferencia[]):
 
 export async function FazerLancamento(jsonData: Lancamento[]): Promise<Root3> {
     try {
-        const response = await axios.post<Root3>('http://192.168.254.130:30492/api/banco/inserirlancamento', {
+        const response = await axios.post<Root3>('http://45.5.43.168:30492/api/banco/inserirlancamento', {
             jsonData: jsonData,
         });
 
@@ -247,7 +247,7 @@ export interface Json {
 export async function ConsultarTabelaPedidos(tabela: string): Promise<Root4> {
 
     try {
-        const response = await axios.post<Root4>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root4>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -283,7 +283,7 @@ export interface Lancamento {
 export async function ConsultarTabelaLancamentos(tabela: string): Promise<Root5> {
 
     try {
-        const response = await axios.post<Root5>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root5>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -306,7 +306,7 @@ export interface Message10 {
 export async function ConsultarTabelaFornecedor(tabela: string): Promise<Root10> {
 
     try {
-        const response = await axios.post<Root10>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root10>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -344,7 +344,7 @@ export interface Json11 {
 export async function ConsultarTabelaFinanceiro(tabela: string): Promise<Root11> {
 
     try {
-        const response = await axios.post<Root11>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root11>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -356,7 +356,7 @@ export async function ConsultarTabelaFinanceiro(tabela: string): Promise<Root11>
 }
 export async function InserirFinanceiro(jsonData: Json11): Promise<Root6> {
     try {
-        const response = await axios.post<Root6>('http://192.168.254.130:30492/api/banco/inserirfinanceiro', {
+        const response = await axios.post<Root6>('http://45.5.43.168:30492/api/banco/inserirfinanceiro', {
             jsonData: jsonData,
         });
 
@@ -388,7 +388,7 @@ export interface Conferencum {
 export async function ConsultarTabelaConferencia(tabela: string): Promise<Root7> {
 
     try {
-        const response = await axios.post<Root7>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root7>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -403,7 +403,7 @@ export async function ConsultarTabelaConferencia(tabela: string): Promise<Root7>
 export async function MudarStatus(codigo: string) {
 
     try {
-        const response = await axios.post('http://192.168.254.130:30492/api/banco/statusproduto', {
+        const response = await axios.post('http://45.5.43.168:30492/api/banco/statusproduto', {
             codigo,
         });
 
@@ -437,7 +437,7 @@ export interface Perca {
 export async function ConsultarTabelaPercas(tabela: string): Promise<Root15> {
 
     try {
-        const response = await axios.post<Root15>('http://192.168.254.130:30492/api/banco/consulta', {
+        const response = await axios.post<Root15>('http://45.5.43.168:30492/api/banco/consulta', {
             tabela: tabela,
         });
 
@@ -451,7 +451,7 @@ export async function ConsultarTabelaPercas(tabela: string): Promise<Root15> {
 export async function JogarPercas(loja: number, jsonData: string): Promise<Root3> {
 
     try {
-        const response = await axios.post<Root3>('http://192.168.254.130:30492/api/banco/percas', {
+        const response = await axios.post<Root3>('http://45.5.43.168:30492/api/banco/percas', {
             loja: loja,
             jsonData: jsonData,
         });
