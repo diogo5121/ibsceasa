@@ -51,8 +51,7 @@ export default function Home() {
               <GoInfo size={25} />
             </Box>
           </Button>
-          {parseFloat(Horario) < 17 && (
-            <>
+
               {(Today === 0 || Today === 2 || Today === 4) && (
                 <>
                   <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/pedidoceasa')}>
@@ -73,8 +72,8 @@ export default function Home() {
                   </Button>
                 </>
               )}
-            </>
-          )}
+            
+          
 
           <Button variant="contained" style={{ width: 150, height: 150, margin: 10, padding: 5, backgroundColor: 'green' }} onClick={() => router.push('/relatorios')}>
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
